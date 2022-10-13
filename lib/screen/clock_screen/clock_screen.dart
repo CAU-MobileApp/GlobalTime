@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:world_time/screen/clock_screen/clock.dart';
+import 'package:world_time/components/clock.dart';
 
 class DetailScreen extends StatelessWidget {
   const DetailScreen({
@@ -8,7 +8,6 @@ class DetailScreen extends StatelessWidget {
   @override
 
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: GestureDetector(
         child: Center(

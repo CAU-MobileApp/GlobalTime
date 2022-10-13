@@ -11,14 +11,15 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  List list = List.generate(1, (index) => index);
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
   }
 
+  @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -49,21 +50,55 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: Color(0xFF222324),
       ),
       body: GestureDetector(
-        child: Hero(
-            tag: 'imageHero',
-            child: Container(
-              width: size.width,
-              height: 100,
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(image: AssetImage('./assets/background/dark_city.jpg', ),fit: BoxFit.cover)
-                    ),
-                  ),
-                ],
+        child: ReorderableListView.builder(
+          shrinkWrap: true,
+          itemCount: list.length,
+          itemBuilder: (BuildContext context, int index){
+            return Dismissible(
+              key: ValueKey(list[index]),
+              onDismissed: (direction){
+                setState(() {
+                  list.removeAt(index);
+                });
+              },
+              child: Hero(
+                  tag: 'imageHero',
+                  child: Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(image: AssetImage('./assets/background/dark_city.jpg', ),fit: BoxFit.cover),
+                        color: Colors.black54
+                      ),
+                      child:  Card(
+                        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                        color: Colors.black54,
+                        child: Center(
+                          child: ListTile(
+                            title: Text("Seoul", style: TextStyle(color:Colors.white, fontSize: 30),),
+                            trailing: IconButton(
+                              icon:Icon(Icons.edit, color:Colors.white, size: 30,),
+                              onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                  return DetailScreen();
+                                }));
+                              },
+                            ),
+                          ),
+                        ),
+                      )
+                  )
               ),
-            )
+            );
+          },
+          onReorder:(int oldIndex, int newIndex){
+            setState(() {
+              if(oldIndex < newIndex){
+                newIndex -= 1;
+              }
+              var item = list.removeAt(oldIndex);
+              list.insert(newIndex, item);
+            });
+          },
         ),
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) {
