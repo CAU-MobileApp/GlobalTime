@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:world_time/components/clock.dart';
-
+import 'package:world_time/screen/clock_screen/clock.dart';
+import 'package:provider/provider.dart';
+import 'package:world_time/components/store.dart';
 class DetailScreen extends StatelessWidget {
   const DetailScreen({
     Key? key
@@ -12,7 +13,7 @@ class DetailScreen extends StatelessWidget {
       body: GestureDetector(
         child: Center(
           child: Hero(
-              tag: 'imageHero',
+              tag: context.watch<Store>().hero,
               child: Stack(
                 children: [
                   Container(

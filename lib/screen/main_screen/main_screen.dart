@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:world_time/components/store.dart';
 import 'package:world_time/screen/clock_screen/clock_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:world_time/screen/custom_screen/custom_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.title});
@@ -18,6 +19,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,19 +31,7 @@ class _MainScreenState extends State<MainScreen> {
               child:IconButton(
                   onPressed: (){
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return Scaffold(
-                          backgroundColor: Color(0xFF211D1D),
-                          body: SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
-                                child: Column(
-                                children: [
-                                  Text('Country'),
-                                ],
-                            ),
-                              ),
-                          )
-                        );
+                        return CustomizeScreen();
                     }));
                   }, icon : Icon(Icons.add, size: 32)
               )
@@ -62,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
                 });
               },
               child: Hero(
-                  tag: 'imageHero',
+                  tag: context.watch<Store>().hero,
                   child: Container(
                       height: 100,
                       decoration: BoxDecoration(
@@ -74,10 +64,13 @@ class _MainScreenState extends State<MainScreen> {
                         color: Colors.black54,
                         child: Center(
                           child: ListTile(
+                            /**Text 안에 list[i].country로 수정*/
                             title: Text("Seoul", style: TextStyle(color:Colors.white, fontSize: 30),),
                             trailing: IconButton(
                               icon:Icon(Icons.edit, color:Colors.white, size: 30,),
+                              /**onPressed 누르면, Customize Screen으로 이동*/
                               onPressed: (){
+                                context.watch<Store>().getTime();
                                 Navigator.push(context, MaterialPageRoute(builder: (_) {
                                   return DetailScreen();
                                 }));
@@ -101,6 +94,7 @@ class _MainScreenState extends State<MainScreen> {
           },
         ),
         onTap: () {
+          Provider.of<Store>(context, listen: false).getTime();
           Navigator.push(context, MaterialPageRoute(builder: (_) {
             return DetailScreen();
           }));
