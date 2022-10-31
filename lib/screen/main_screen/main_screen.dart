@@ -19,7 +19,6 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,15 +26,15 @@ class _MainScreenState extends State<MainScreen> {
         title: Text(widget.title),
         actions: [
           Padding(
-              padding: const EdgeInsets.fromLTRB(0,0,14,0),
-              child:IconButton(
-                  onPressed: (){
+              padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
+              child: IconButton(
+                  onPressed: () {
+                    Provider.of<Store>(context, listen: false).getTime();
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return CustomizeScreen();
+                      return CustomizeScreen();
                     }));
-                  }, icon : Icon(Icons.add, size: 32)
-              )
-          )
+                  },
+                  icon: Icon(Icons.add, size: 32)))
         ],
         backgroundColor: Color(0xFF222324),
       ),
@@ -43,10 +42,10 @@ class _MainScreenState extends State<MainScreen> {
         child: ReorderableListView.builder(
           shrinkWrap: true,
           itemCount: list.length,
-          itemBuilder: (BuildContext context, int index){
+          itemBuilder: (BuildContext context, int index) {
             return Dismissible(
               key: ValueKey(list[index]),
-              onDismissed: (direction){
+              onDismissed: (direction) {
                 setState(() {
                   list.removeAt(index);
                 });
@@ -56,36 +55,48 @@ class _MainScreenState extends State<MainScreen> {
                   child: Container(
                       height: 100,
                       decoration: BoxDecoration(
-                        image: DecorationImage(image: AssetImage('./assets/background/dark_city.jpg', ),fit: BoxFit.cover),
-                        color: Colors.black54
-                      ),
-                      child:  Card(
-                        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                          image: DecorationImage(
+                              image: AssetImage(
+                                './assets/background/background0.jpg',
+                              ),
+                              fit: BoxFit.cover),
+                          color: Colors.black54),
+                      child: Card(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                         color: Colors.black54,
                         child: Center(
                           child: ListTile(
                             /**Text 안에 list[i].country로 수정*/
-                            title: Text("Seoul", style: TextStyle(color:Colors.white, fontSize: 30),),
+                            title: Text(
+                              "Seoul",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 30),
+                            ),
                             trailing: IconButton(
-                              icon:Icon(Icons.edit, color:Colors.white, size: 30,),
+                              icon: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 30,
+                              ),
                               /**onPressed 누르면, Customize Screen으로 이동*/
-                              onPressed: (){
-                                context.watch<Store>().getTime();
-                                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                              onPressed: () {
+                                Provider.of<Store>(context, listen: false)
+                                    .getTime();
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) {
                                   return DetailScreen();
                                 }));
                               },
                             ),
                           ),
                         ),
-                      )
-                  )
-              ),
+                      ))),
             );
           },
-          onReorder:(int oldIndex, int newIndex){
+          onReorder: (int oldIndex, int newIndex) {
             setState(() {
-              if(oldIndex < newIndex){
+              if (oldIndex < newIndex) {
                 newIndex -= 1;
               }
               var item = list.removeAt(oldIndex);
