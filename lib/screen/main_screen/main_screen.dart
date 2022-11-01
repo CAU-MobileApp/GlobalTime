@@ -12,6 +12,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  List<StoreTheme> list2 = List.empty(growable: true);
   List list = List.generate(1, (index) => index);
   @override
   void initState() {
@@ -29,7 +30,9 @@ class _MainScreenState extends State<MainScreen> {
               padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
               child: IconButton(
                   onPressed: () {
-                    Provider.of<Store>(context, listen: false).getTime();
+                    Provider.of<Store>(context, listen: false).getTime(
+                        Provider.of<StoreTheme>(context, listen: false)
+                            .country);
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
                       return CustomizeScreen();
                     }));
@@ -81,11 +84,14 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                               /**onPressed 누르면, Customize Screen으로 이동*/
                               onPressed: () {
+                                //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
                                 Provider.of<Store>(context, listen: false)
-                                    .getTime();
+                                    .getTime(Provider.of<StoreTheme>(context,
+                                            listen: false)
+                                        .country);
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (_) {
-                                  return DetailScreen();
+                                  return CustomizeScreen();
                                 }));
                               },
                             ),
@@ -105,7 +111,9 @@ class _MainScreenState extends State<MainScreen> {
           },
         ),
         onTap: () {
-          Provider.of<Store>(context, listen: false).getTime();
+          //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
+          Provider.of<Store>(context, listen: false)
+              .getTime(Provider.of<StoreTheme>(context, listen: false).country);
           Navigator.push(context, MaterialPageRoute(builder: (_) {
             return DetailScreen();
           }));

@@ -20,7 +20,7 @@ class DetailScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                           image:
-                              AssetImage('./assets/background/background0.jpg'),
+                              AssetImage('assets/background/background0.jpg'),
                           fit: BoxFit.cover),
                     ),
                   ),

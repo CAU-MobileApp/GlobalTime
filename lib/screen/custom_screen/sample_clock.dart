@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
 
-class ClockWidget extends StatefulWidget {
-  const ClockWidget({Key? key}) : super(key: key);
+class SampleClockWidget extends StatefulWidget {
+  const SampleClockWidget({Key? key}) : super(key: key);
 
-  State<ClockWidget> createState() => _ClockWidgetState();
+  @override
+  State<SampleClockWidget> createState() => _SampleClockWidgetState();
 }
 
-class _ClockWidgetState extends State<ClockWidget> {
+class _SampleClockWidgetState extends State<SampleClockWidget> {
   @override
   void initState() {
     // TODO: implement initState
@@ -33,7 +34,9 @@ class _ClockWidgetState extends State<ClockWidget> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   'Seoul ${context.watch<Store>().dateTime}',
-                  style: TextStyle(fontSize: 40, color: Colors.white70),
+                  style: TextStyle(
+                      fontSize: 40,
+                      color: context.watch<StoreTheme>().textColor),
                 ),
               ),
             ),

@@ -6,8 +6,15 @@ import 'package:provider/provider.dart';
 import 'package:world_time/screen/main_screen/main_screen.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (c) => Store(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (c) => Store(),
+      ),
+      ChangeNotifierProvider(
+        create: (c) => StoreTheme(),
+      ),
+    ],
     child: MyApp(),
   ));
 }
@@ -21,8 +28,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: seedColor, brightness: Brightness.dark),
           textTheme:
               GoogleFonts.notoSansNKoTextTheme(Theme.of(context).textTheme)),
       home: const MainScreen(title: 'WorldTime'),
