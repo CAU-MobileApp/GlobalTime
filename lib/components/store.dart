@@ -52,6 +52,7 @@ class StoreTheme extends ChangeNotifier {
 
   void setBackground(index) {
     backgroundTheme = 'assets/background/background$index.jpg';
+    print(backgroundTheme);
     notifyListeners();
   }
 

@@ -125,12 +125,12 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                               Text(
                                 'Text',
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w600),
+                                    fontSize: 20, fontWeight: FontWeight.w600),
                               ),
                               Text(
                                 'Clock',
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w600),
+                                    fontSize: 20, fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),
@@ -196,8 +196,7 @@ class Background extends StatelessWidget {
               },
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Image.asset(
-                    'assets/background/small/background$index.jpg',
+                child: Image.asset('assets/background/small/small_bg$index.jpg',
                     fit: BoxFit.contain),
               ),
             );
