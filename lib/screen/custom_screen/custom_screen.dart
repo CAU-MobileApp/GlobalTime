@@ -116,7 +116,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                           child: TabBar(
                             labelColor: Colors.black,
                             unselectedLabelColor: Colors.grey,
-                            isScrollable: true,
+                            isScrollable: false,
                             indicatorSize: TabBarIndicatorSize.tab,
                             indicator: BoxDecoration(
                                 borderRadius: BorderRadius.circular(40),
@@ -140,10 +140,13 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                   ),
                   Flexible(
                     child: TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
                       children: [
                         SlidePicker(
                           pickerColor: context.watch<StoreTheme>().textColor,
                           enableAlpha: false,
+                          colorModel: ColorModel.rgb,
+                          indicatorSize: const Size(200, 15),
                           onColorChanged: (color) {
                             Provider.of<StoreTheme>(context, listen: false)
                                 .setTextColor(color);
@@ -152,6 +155,8 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                         SlidePicker(
                           pickerColor: context.watch<StoreTheme>().clockColor,
                           enableAlpha: false,
+                          colorModel: ColorModel.rgb,
+                          indicatorSize: const Size(200, 15),
                           onColorChanged: (color) {
                             Provider.of<StoreTheme>(context, listen: false)
                                 .setClockColor(color);
