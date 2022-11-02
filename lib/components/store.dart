@@ -44,10 +44,11 @@ class Store extends ChangeNotifier {
 }
 
 class StoreTheme extends ChangeNotifier {
-  String clockTheme = '';
+  String clockTheme = './assets/clock_layout/standard.png';
   String backgroundTheme = 'assets/background/background0.jpg';
   String country = 'Asia/Seoul';
   Color textColor = Colors.white;
+  Color clockColor = Colors.white;
 
   void setBackground(index) {
     backgroundTheme = 'assets/background/background$index.jpg';
@@ -59,10 +60,15 @@ class StoreTheme extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setClockColor(color) {
+    clockColor = color;
+    notifyListeners();
+  }
+
   void clearTheme() {
     clockTheme = './assets/clock_layout/standard.png';
     backgroundTheme = 'assets/background/background0.jpg';
-    country = '';
+    country = 'Asia/Seoul';
     textColor = Colors.white;
     notifyListeners();
   }

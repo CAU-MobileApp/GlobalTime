@@ -54,7 +54,7 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                 children: [
                   Image.asset(
                     './assets/clock_layout/standard.png',
-                    color: Colors.white,
+                    color: context.watch<StoreTheme>().clockColor,
                   ),
                   // Seconds
                   Transform.rotate(

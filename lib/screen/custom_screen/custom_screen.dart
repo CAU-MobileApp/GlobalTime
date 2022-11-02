@@ -33,22 +33,16 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
             ] else if (_currentIndex == 2) ...[
               Background()
             ] else if (_currentIndex == 3) ...[
-              TextColor()
+              ThemeColor()
             ]
           ],
         ),
       ),
       bottomNavigationBar: Container(
         height: 70,
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            offset: Offset(0, -5),
-            blurRadius: 10,
-            color: Colors.lightBlue,
-          ),
-        ]),
         child: BottomNavigationBar(
-          backgroundColor: Colors.orange,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Color(0xffedeff2),
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.public),
@@ -65,8 +59,8 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
               label: "Background",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.text_fields),
-              label: "Text",
+              icon: Icon(Icons.palette_outlined),
+              label: "Color",
             ),
           ],
           showUnselectedLabels: true,
@@ -85,37 +79,89 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   }
 }
 
-class TextColor extends StatelessWidget {
-  const TextColor({
+class ThemeColor extends StatefulWidget {
+  ThemeColor({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<ThemeColor> createState() => _ThemeColorState();
+}
+
+class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment(0.0, 1),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.5,
-        decoration: BoxDecoration(color: Colors.white),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ColorPicker(
-              enableAlpha: true,
-              paletteType: PaletteType.hsvWithHue,
-              pickerColor: context.watch<StoreTheme>().textColor,
-              colorPickerWidth: 200.0,
-              pickerAreaHeightPercent: 1,
-              onColorChanged: (color) {
-                Provider.of<StoreTheme>(context, listen: false)
-                    .setTextColor(color);
-              },
-            ),
-          ),
-        ),
-      ),
+    return DefaultTabController(
+      length: 2,
+      child: Align(
+          alignment: Alignment(0.0, 1),
+          child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.25,
+              decoration: BoxDecoration(color: Colors.white),
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                      color: Colors.black12,
+                      width: 4,
+                    ))),
+                    child: RotatedBox(
+                      quarterTurns: 1,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TabBar(
+                            labelColor: Colors.black,
+                            unselectedLabelColor: Colors.grey,
+                            isScrollable: true,
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            indicator: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                color: Colors.black12),
+                            tabs: [
+                              Text(
+                                'Text',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                'Clock',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: TabBarView(
+                      children: [
+                        SlidePicker(
+                          pickerColor: context.watch<StoreTheme>().textColor,
+                          enableAlpha: false,
+                          onColorChanged: (color) {
+                            Provider.of<StoreTheme>(context, listen: false)
+                                .setTextColor(color);
+                          },
+                        ),
+                        SlidePicker(
+                          pickerColor: context.watch<StoreTheme>().clockColor,
+                          enableAlpha: false,
+                          onColorChanged: (color) {
+                            Provider.of<StoreTheme>(context, listen: false)
+                                .setClockColor(color);
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ))),
     );
   }
 }
@@ -132,7 +178,7 @@ class Background extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.1,
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: BoxDecoration(color: Color(0xfff0f0f0)),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -144,8 +190,9 @@ class Background extends StatelessWidget {
                     .setBackground(index);
               },
               child: Padding(
-                padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                child: Image.asset('assets/background/background$index.jpg',
+                padding: const EdgeInsets.all(4.0),
+                child: Image.asset(
+                    'assets/background/small/background$index.jpg',
                     fit: BoxFit.contain),
               ),
             );
