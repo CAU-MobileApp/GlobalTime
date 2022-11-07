@@ -16,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
   List list = List.generate(1, (index) => index);
   @override
   void initState() {
+    Provider.of<Store>(context, listen: false).getCountryList();  //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
     // TODO: implement initState
     super.initState();
   }

@@ -33,7 +33,7 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Seoul ${context.watch<Store>().dateTime}',
+                  '${context.watch<Store>().countryParsed} ${context.watch<Store>().dateTime}',
                   style: TextStyle(
                       fontSize: 40,
                       color: context.watch<StoreTheme>().textColor),

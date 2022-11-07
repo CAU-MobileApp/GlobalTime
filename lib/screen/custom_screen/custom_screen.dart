@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -43,7 +46,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Color(0xffedeff2),
-          items: [
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.public),
               label: "Country",
@@ -121,7 +124,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                             indicator: BoxDecoration(
                                 borderRadius: BorderRadius.circular(40),
                                 color: Colors.black12),
-                            tabs: [
+                            tabs: const [
                               Text(
                                 'Text',
                                 style: TextStyle(
@@ -208,6 +211,7 @@ class Background extends StatelessWidget {
 }
 
 class Clock extends StatelessWidget {
+
   const Clock({
     Key? key,
   }) : super(key: key);
@@ -236,30 +240,49 @@ class Clock extends StatelessWidget {
   }
 }
 
-class Country extends StatelessWidget {
+class Country extends StatefulWidget {
   const Country({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<Country> createState() => _CountryState();
+}
+
+class _CountryState extends State<Country> {
+
+  @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment(0.0, 0.9),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.1,
-        decoration: BoxDecoration(color: Colors.white),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-              children: List.generate(5, (index) {
-            return Padding(
-              padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-              child: Image.asset('assets/background/background$index.jpg',
-                  fit: BoxFit.contain),
-            );
-          })),
-        ),
+
+    return Center(
+      child: Align(
+          alignment: const Alignment(0.0, 1),
+          child: SingleChildScrollView(
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.25,
+                decoration: const BoxDecoration(color: Colors.white),
+
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  children: List.generate(Provider.of<Store>(context).countryListParsed.length, (i){
+                    return GestureDetector(
+                      key: ValueKey(i),
+                      child: ListTile(
+                        title: Text(Provider.of<Store>(context).countryListParsed[i]),
+                        onTap: () {
+                          Provider.of<Store>(context, listen: false).
+                          setCountry(Provider.of<Store>(context, listen: false).countryListParsed[i]);  //새로 선택된 지역 정보로 text를 갱신
+                          Provider.of<Store>(context, listen: false).
+                          getTime(Provider.of<Store>(context, listen: false).country);  //갱신된 지역 정보로 시간 또한 업데이트
+                          },                                                            //StoreTheme에 있던 country정보를 Store에서 일괄 관리하는게 나을 것 같아서 이전하였습니다
+                      ),
+                    );
+                  }).toList(),
+                ),
+
+            ),
+          ),
       ),
     );
   }
