@@ -91,6 +91,11 @@ class StoreTheme extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setClock(idx) {
+    clockTheme = 'assets/clock_layout/clock$idx.png';
+    notifyListeners();
+  }
+
   void setTextColor(color) {
     textColor = color;
     notifyListeners();

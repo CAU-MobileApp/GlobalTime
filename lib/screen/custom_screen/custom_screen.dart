@@ -228,10 +228,17 @@ class Clock extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
               children: List.generate(5, (index) {
-            return Padding(
-              padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-              child: Image.asset('assets/background/background$index.jpg',
-                  fit: BoxFit.contain),
+            return GestureDetector(
+              key: ValueKey(index),
+              onTap: () {
+                Provider.of<StoreTheme>(context, listen: false)
+                    .setClock(index);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Image.asset('assets/clock_layout/clock$index.png',
+                    fit: BoxFit.contain),
+              ),
             );
           })),
         ),
