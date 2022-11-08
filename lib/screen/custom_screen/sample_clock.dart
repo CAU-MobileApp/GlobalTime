@@ -41,11 +41,9 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                       style: context.watch<Store>().index == -1
                           ? TextStyle(
                               fontSize: 32,
-                              fontWeight: FontWeight.w600,
                               color: context.watch<StoreTheme>().textColor)
                           : TextStyle(
                               fontSize: 32,
-                              fontWeight: FontWeight.w600,
                               color: context
                                   .watch<Store>()
                                   .storedThemes[context.watch<Store>().index]
@@ -56,11 +54,9 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                       style: context.watch<Store>().index == -1
                           ? TextStyle(
                               fontSize: 32,
-                              fontWeight: FontWeight.w600,
                               color: context.watch<StoreTheme>().textColor)
                           : TextStyle(
                               fontSize: 32,
-                              fontWeight: FontWeight.w600,
                               color: context
                                   .watch<Store>()
                                   .storedThemes[context.watch<Store>().index]

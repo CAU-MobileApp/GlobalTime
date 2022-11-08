@@ -39,7 +39,6 @@ class _ClockWidgetState extends State<ClockWidget> {
                         '${context.watch<Store>().countryParsed}',
                         style: TextStyle(
                             fontSize: 32,
-                            fontWeight: FontWeight.w600,
                             color: context
                                 .watch<Store>()
                                 .storedThemes[context.watch<Store>().index]
@@ -49,7 +48,6 @@ class _ClockWidgetState extends State<ClockWidget> {
                         '${context.watch<Store>().dateTime}',
                         style: TextStyle(
                             fontSize: 32,
-                            fontWeight: FontWeight.w600,
                             color: context
                                 .watch<Store>()
                                 .storedThemes[context.watch<Store>().index]
