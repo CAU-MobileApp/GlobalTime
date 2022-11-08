@@ -106,6 +106,15 @@ class _MainScreenState extends State<MainScreen> {
                                 //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
                                 Provider.of<Store>(context, listen: false)
                                     .setIndex(index);
+                                Provider.of<Store>(context, listen: false)
+                                    .setCountry(Provider.of<Store>(context,
+                                            listen: false)
+                                        .storedThemes[index]
+                                        .country); //새로 선택된 지역 정보로 text를 갱신
+                                Provider.of<Store>(context, listen: false)
+                                    .getTime(Provider.of<Store>(context,
+                                            listen: false)
+                                        .country);
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (_) {
                                   return CustomizeScreen();
