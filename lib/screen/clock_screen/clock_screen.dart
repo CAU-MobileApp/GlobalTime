@@ -11,7 +11,7 @@ class DetailScreen extends StatelessWidget {
       body: GestureDetector(
         child: Center(
           child: Hero(
-              tag: context.watch<Store>().hero,
+              tag: "${context.watch<Store>().index}",
               child: Stack(
                 children: [
                   Container(
@@ -19,8 +19,10 @@ class DetailScreen extends StatelessWidget {
                     height: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                          image:
-                              AssetImage('assets/background/background0.jpg'),
+                          image: AssetImage(context
+                              .watch<Store>()
+                              .storedThemes[context.watch<Store>().index]
+                              .backgroundTheme),
                           fit: BoxFit.cover),
                     ),
                   ),

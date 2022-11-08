@@ -12,11 +12,10 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  List<StoreTheme> list2 = List.empty(growable: true);
-  List list = List.generate(1, (index) => index);
   @override
   void initState() {
-    Provider.of<Store>(context, listen: false).getCountryList();  //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
+    Provider.of<Store>(context, listen: false)
+        .getCountryList(); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
     // TODO: implement initState
     super.initState();
   }
@@ -31,9 +30,11 @@ class _MainScreenState extends State<MainScreen> {
               padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
               child: IconButton(
                   onPressed: () {
-                    Provider.of<Store>(context, listen: false).getTime(
-                        Provider.of<StoreTheme>(context, listen: false)
-                            .country);
+                    Provider.of<Store>(context, listen: false).setIndex(-1);
+                    Provider.of<Store>(context, listen: false)
+                        .setCountry('Seoul');
+                    Provider.of<Store>(context, listen: false)
+                        .getTime('Asia/Seoul');
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
                       return CustomizeScreen();
                     }));
@@ -42,26 +43,40 @@ class _MainScreenState extends State<MainScreen> {
         ],
         backgroundColor: Color(0xFF222324),
       ),
-      body: GestureDetector(
-        child: ReorderableListView.builder(
-          shrinkWrap: true,
-          itemCount: list.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Dismissible(
-              key: ValueKey(list[index]),
-              onDismissed: (direction) {
-                setState(() {
-                  list.removeAt(index);
-                });
+      body: ReorderableListView.builder(
+        shrinkWrap: true,
+        itemCount: context.watch<Store>().storedThemes.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Dismissible(
+            key: ValueKey(index),
+            onDismissed: (direction) {
+              Provider.of<Store>(context, listen: false).deleteTheme(index);
+            },
+            child: GestureDetector(
+              onTap: () {
+                Provider.of<Store>(context, listen: false).setIndex(index);
+                Provider.of<Store>(context, listen: false).setCountry(
+                    Provider.of<Store>(context, listen: false)
+                        .storedThemes[index]
+                        .country); //새로 선택된 지역 정보로 text를 갱신
+                Provider.of<Store>(context, listen: false).getTime(
+                    Provider.of<Store>(context, listen: false).country);
+
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return DetailScreen();
+                }));
               },
               child: Hero(
-                  tag: context.watch<Store>().hero,
+                  tag: "$index",
                   child: Container(
                       height: 100,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage(
-                                './assets/background/background0.jpg',
+                                context
+                                    .watch<Store>()
+                                    .storedThemes[index]
+                                    .backgroundTheme,
                               ),
                               fit: BoxFit.cover),
                           color: Colors.black54),
@@ -73,9 +88,12 @@ class _MainScreenState extends State<MainScreen> {
                           child: ListTile(
                             /**Text 안에 list[i].country로 수정*/
                             title: Text(
-                              "Seoul",
+                              context
+                                  .watch<Store>()
+                                  .storedThemes[index]
+                                  .country,
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 30),
+                                  TextStyle(color: Colors.white, fontSize: 24),
                             ),
                             trailing: IconButton(
                               icon: Icon(
@@ -87,9 +105,7 @@ class _MainScreenState extends State<MainScreen> {
                               onPressed: () {
                                 //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
                                 Provider.of<Store>(context, listen: false)
-                                    .getTime(Provider.of<StoreTheme>(context,
-                                            listen: false)
-                                        .country);
+                                    .setIndex(index);
                                 Navigator.push(context,
                                     MaterialPageRoute(builder: (_) {
                                   return CustomizeScreen();
@@ -99,25 +115,15 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                       ))),
-            );
-          },
-          onReorder: (int oldIndex, int newIndex) {
-            setState(() {
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-              var item = list.removeAt(oldIndex);
-              list.insert(newIndex, item);
-            });
-          },
-        ),
-        onTap: () {
-          //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
+            ),
+          );
+        },
+        onReorder: (int oldIndex, int newIndex) {
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
           Provider.of<Store>(context, listen: false)
-              .getTime(Provider.of<StoreTheme>(context, listen: false).country);
-          Navigator.push(context, MaterialPageRoute(builder: (_) {
-            return DetailScreen();
-          }));
+              .reOrder(oldIndex, newIndex);
         },
       ),
     );

@@ -29,19 +29,46 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Card(
+              elevation: 0,
               color: Colors.transparent,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  '${context.watch<Store>().countryParsed} ${context.watch<Store>().dateTime}',
-                  style: TextStyle(
-                      fontSize: 40,
-                      color: context.watch<StoreTheme>().textColor),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      context.watch<Store>().countryParsed,
+                      style: context.watch<Store>().index == -1
+                          ? TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: context.watch<StoreTheme>().textColor)
+                          : TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: context
+                                  .watch<Store>()
+                                  .storedThemes[context.watch<Store>().index]
+                                  .textColor),
+                    ),
+                    Text(
+                      context.watch<Store>().dateTime,
+                      style: context.watch<Store>().index == -1
+                          ? TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: context.watch<StoreTheme>().textColor)
+                          : TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: context
+                                  .watch<Store>()
+                                  .storedThemes[context.watch<Store>().index]
+                                  .textColor),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            SizedBox(
-              height: 24,
             ),
             Container(
               width: 300,
@@ -52,10 +79,22 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                   borderRadius: BorderRadius.circular(150)),
               child: Stack(
                 children: [
-                  Image.asset(
-                    context.watch<StoreTheme>().clockTheme,
-                    color: context.watch<StoreTheme>().clockColor,
-                  ),
+                  context.watch<Store>().index == -1
+                      ? Image.asset(
+                          context.watch<StoreTheme>().clockTheme,
+                          color: context.watch<StoreTheme>().clockColor,
+                          fit: BoxFit.fill,
+                        )
+                      : Image.asset(
+                          context
+                              .watch<Store>()
+                              .storedThemes[context.watch<Store>().index]
+                              .clockTheme,
+                          color: context
+                              .watch<Store>()
+                              .storedThemes[context.watch<Store>().index]
+                              .clockColor,
+                        ),
                   // Seconds
                   Transform.rotate(
                     angle: context.watch<Store>().secondsAngle,

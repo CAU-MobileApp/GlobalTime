@@ -28,14 +28,35 @@ class _ClockWidgetState extends State<ClockWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Card(
+              elevation: 0,
               color: Colors.transparent,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Seoul ${context.watch<Store>().dateTime}',
-                  style: TextStyle(fontSize: 40, color: Colors.white70),
-                ),
-              ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${context.watch<Store>().countryParsed}',
+                        style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w600,
+                            color: context
+                                .watch<Store>()
+                                .storedThemes[context.watch<Store>().index]
+                                .textColor),
+                      ),
+                      Text(
+                        '${context.watch<Store>().dateTime}',
+                        style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w600,
+                            color: context
+                                .watch<Store>()
+                                .storedThemes[context.watch<Store>().index]
+                                .textColor),
+                      ),
+                    ],
+                  )),
             ),
             SizedBox(
               height: 24,
@@ -50,8 +71,14 @@ class _ClockWidgetState extends State<ClockWidget> {
               child: Stack(
                 children: [
                   Image.asset(
-                    './assets/clock_layout/clock0.png',
-                    color: Colors.white,
+                    context
+                        .watch<Store>()
+                        .storedThemes[context.watch<Store>().index]
+                        .clockTheme,
+                    color: context
+                        .watch<Store>()
+                        .storedThemes[context.watch<Store>().index]
+                        .clockColor,
                   ),
                   // Seconds
                   Transform.rotate(

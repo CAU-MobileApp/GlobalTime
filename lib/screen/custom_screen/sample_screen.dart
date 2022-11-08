@@ -15,7 +15,12 @@ class SampleScreen extends StatelessWidget {
           height: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(context.watch<StoreTheme>().backgroundTheme),
+                image: context.watch<Store>().index == -1
+                    ? AssetImage(context.watch<StoreTheme>().backgroundTheme)
+                    : AssetImage(context
+                        .watch<Store>()
+                        .storedThemes[context.watch<Store>().index]
+                        .backgroundTheme),
                 fit: BoxFit.cover),
           ),
         ),
