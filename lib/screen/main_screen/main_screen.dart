@@ -48,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
         itemCount: context.watch<Store>().storedThemes.length,
         itemBuilder: (BuildContext context, int index) {
           return Dismissible(
-            key: ValueKey(index),
+            key: ValueKey(context.watch<Store>().storedThemes[index]),
             onDismissed: (direction) {
               Provider.of<Store>(context, listen: false).deleteTheme(index);
             },
