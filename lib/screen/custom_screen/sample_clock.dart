@@ -53,7 +53,7 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
               child: Stack(
                 children: [
                   Image.asset(
-                    './assets/clock_layout/standard.png',
+                    context.watch<StoreTheme>().clockTheme,
                     color: context.watch<StoreTheme>().clockColor,
                   ),
                   // Seconds

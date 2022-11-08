@@ -79,7 +79,7 @@ class Store extends ChangeNotifier {
 }
 
 class StoreTheme extends ChangeNotifier {
-  String clockTheme = './assets/clock_layout/standard.png';
+  String clockTheme = './assets/clock_layout/clock0.png';
   String backgroundTheme = 'assets/background/background0.jpg';
   String country = 'Asia/Seoul';
   Color textColor = Colors.white;
@@ -92,7 +92,7 @@ class StoreTheme extends ChangeNotifier {
   }
 
   void setClock(idx) {
-    clockTheme = 'assets/clock_layout/clock$idx.png';
+    clockTheme = './assets/clock_layout/clock$idx.png';
     notifyListeners();
   }
 
@@ -107,7 +107,7 @@ class StoreTheme extends ChangeNotifier {
   }
 
   void clearTheme() {
-    clockTheme = './assets/clock_layout/standard.png';
+    clockTheme = './assets/clock_layout/clock0.png';
     backgroundTheme = 'assets/background/background0.jpg';
     country = 'Asia/Seoul';
     textColor = Colors.white;

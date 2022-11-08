@@ -50,7 +50,7 @@ class _ClockWidgetState extends State<ClockWidget> {
               child: Stack(
                 children: [
                   Image.asset(
-                    './assets/clock_layout/standard.png',
+                    './assets/clock_layout/clock0.png',
                     color: Colors.white,
                   ),
                   // Seconds
