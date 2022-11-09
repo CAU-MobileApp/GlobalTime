@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           textTheme:
               GoogleFonts.notoSansNKoTextTheme(Theme.of(context).textTheme)),
-      home: const MainScreen(title: 'WorldTime'),
+      home: const MainScreen(title: ''),
     );
   }
 }
