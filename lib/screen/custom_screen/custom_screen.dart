@@ -34,7 +34,8 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
               actions: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                  child: IconButton(
+                  child: 
+                    TextButton(
                       onPressed: () {
                         StoreTheme theme = StoreTheme();
                         theme.country =
@@ -55,11 +56,36 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                         Provider.of<Store>(context, listen: false)
                             .getTheme(theme);
                         Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.add,
-                        size: 28,
-                      )),
+                      }, child: const Text('Add',
+                    style: TextStyle(color: Colors.white),),
+                    ),
+                  // IconButton(
+                  //     onPressed: () {
+                  //       StoreTheme theme = StoreTheme();
+                  //       theme.country =
+                  //           Provider.of<StoreTheme>(context, listen: false)
+                  //               .country;
+                  //       theme.backgroundTheme =
+                  //           Provider.of<StoreTheme>(context, listen: false)
+                  //               .backgroundTheme;
+                  //       theme.clockTheme =
+                  //           Provider.of<StoreTheme>(context, listen: false)
+                  //               .clockTheme;
+                  //       theme.clockColor =
+                  //           Provider.of<StoreTheme>(context, listen: false)
+                  //               .clockColor;
+                  //       theme.textColor =
+                  //           Provider.of<StoreTheme>(context, listen: false)
+                  //               .textColor;
+                  //       Provider.of<Store>(context, listen: false)
+                  //           .getTheme(theme);
+                  //       Navigator.pop(context);
+                  //     },
+                  //    
+                  //     icon: Icon(
+                  //       Icons.add,
+                  //       size: 28,
+                  //     )),
                 )
               ],
             )
@@ -109,8 +135,8 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
           ],
           showUnselectedLabels: true,
           currentIndex: _selectedIndex,
-          selectedItemColor: Colors.lightBlue,
-          unselectedItemColor: Colors.orange,
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.grey,
           onTap: (int value) {
             setState(() {
               if (_currentIndex == value) {
