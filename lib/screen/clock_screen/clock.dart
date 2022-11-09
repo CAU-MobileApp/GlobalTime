@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
 
-
 class ClockWidget extends StatefulWidget {
-  const ClockWidget({
-    Key? key
-  }) : super(key: key);
+  const ClockWidget({Key? key}) : super(key: key);
 
   State<ClockWidget> createState() => _ClockWidgetState();
 }
@@ -18,11 +14,13 @@ class _ClockWidgetState extends State<ClockWidget> {
     // TODO: implement initState
     super.initState();
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     context.watch<Store>().setTime();
   }
+
   Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
@@ -30,11 +28,33 @@ class _ClockWidgetState extends State<ClockWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Card(
+              elevation: 0,
               color: Colors.transparent,
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Seoul ${context.watch<Store>().dateTime}', style: TextStyle(fontSize: 40, color: Colors.white70),),
-              ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${context.watch<Store>().countryParsed}',
+                        style: TextStyle(
+                            fontSize: 32,
+                            color: context
+                                .watch<Store>()
+                                .storedThemes[context.watch<Store>().index]
+                                .textColor),
+                      ),
+                      Text(
+                        '${context.watch<Store>().dateTime}',
+                        style: TextStyle(
+                            fontSize: 32,
+                            color: context
+                                .watch<Store>()
+                                .storedThemes[context.watch<Store>().index]
+                                .textColor),
+                      ),
+                    ],
+                  )),
             ),
             SizedBox(
               height: 24,
@@ -44,25 +64,32 @@ class _ClockWidgetState extends State<ClockWidget> {
               height: 300,
               decoration: BoxDecoration(
                   color: Colors.white30,
-                  border: Border.all(color:Colors.black45, width: 10),
-                  borderRadius: BorderRadius.circular(150)
-              ),
+                  border: Border.all(color: Colors.black45, width: 10),
+                  borderRadius: BorderRadius.circular(150)),
               child: Stack(
                 children: [
-                  Image.asset('./assets/clock_layout/standard.png', color: Colors.white,),
+                  Image.asset(
+                    context
+                        .watch<Store>()
+                        .storedThemes[context.watch<Store>().index]
+                        .clockTheme,
+                    color: context
+                        .watch<Store>()
+                        .storedThemes[context.watch<Store>().index]
+                        .clockColor,
+                  ),
                   // Seconds
                   Transform.rotate(
-                    angle:  context.watch<Store>().secondsAngle,
+                    angle: context.watch<Store>().secondsAngle,
                     child: Container(
                       child: Container(
                         height: 120,
                         width: 2,
                         decoration: BoxDecoration(
                             color: Colors.black45,
-                            borderRadius: BorderRadius.circular(10)
-                        ),
+                            borderRadius: BorderRadius.circular(10)),
                       ),
-                      alignment: Alignment(0,-0.45),
+                      alignment: Alignment(0, -0.45),
                     ),
                   ),
                   // Minutes
@@ -74,25 +101,23 @@ class _ClockWidgetState extends State<ClockWidget> {
                         width: 4,
                         decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)
-                        ),
+                            borderRadius: BorderRadius.circular(10)),
                       ),
-                      alignment: Alignment(0,-0.4),
+                      alignment: Alignment(0, -0.4),
                     ),
                   ),
                   // Hours
                   Transform.rotate(
-                    angle:  context.watch<Store>().hoursAngle,
+                    angle: context.watch<Store>().hoursAngle,
                     child: Container(
                       child: Container(
                         height: 65,
                         width: 3,
                         decoration: BoxDecoration(
                             color: Colors.red,
-                            borderRadius: BorderRadius.circular(10)
-                        ),
+                            borderRadius: BorderRadius.circular(10)),
                       ),
-                      alignment: Alignment(0,-0.25),
+                      alignment: Alignment(0, -0.25),
                     ),
                   ),
                   // Dot
@@ -102,10 +127,9 @@ class _ClockWidgetState extends State<ClockWidget> {
                       width: 15,
                       decoration: BoxDecoration(
                           color: Colors.black,
-                          borderRadius: BorderRadius.circular(50)
-                      ),
+                          borderRadius: BorderRadius.circular(50)),
                     ),
-                    alignment: Alignment(0,0),
+                    alignment: Alignment(0, 0),
                   ),
                 ],
               ),
