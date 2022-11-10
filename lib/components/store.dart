@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class Store extends ChangeNotifier {
   double secondsAngle = 0;
@@ -18,6 +20,38 @@ class Store extends ChangeNotifier {
   late Timer timer;
   final List<String> countryListParsed = List.empty(growable: true);
   final List<StoreTheme> storedThemes = List.empty(growable: true);
+  final List<String> localData = List.empty(growable: true);
+
+  getData() async {
+    var storage = await SharedPreferences.getInstance();
+    var temp = storage.getStringList('themeData');
+    temp?.forEach((element) {
+      StoreTheme temp2 = StoreTheme();
+      var token = element.split(',');
+      temp2.clockTheme = token[0].trim();
+      temp2.backgroundTheme = token[1].trim();
+      temp2.country = token[2].trim();
+      temp2.textColor = Color(int.parse(token[3].substring(7, 17)));
+      temp2.clockColor = Color(int.parse(token[4].substring(7, 17)));
+      storedThemes.add(temp2);
+    });
+  }
+
+  saveData() async {
+    var storage = await SharedPreferences.getInstance();
+    var temp = '';
+    for (var value in storedThemes) {
+      temp = value.toString();
+      localData.add(temp);
+    }
+    storage.setStringList('themeData', localData);
+  }
+
+  removeData() async {
+    var storage = await SharedPreferences.getInstance();
+    storage.remove('themeData');
+    localData.clear();
+  }
 
   void reOrder(oldIndex, newIndex) {
     var item = storedThemes.removeAt(oldIndex);
@@ -37,6 +71,11 @@ class Store extends ChangeNotifier {
 
   void deleteTheme(index) {
     storedThemes.removeAt(index);
+    notifyListeners();
+  }
+
+  void deleteAll() {
+    storedThemes.clear();
     notifyListeners();
   }
 
@@ -90,7 +129,6 @@ class Store extends ChangeNotifier {
         }
       }
     }
-    print(countryListParsed);
     notifyListeners();
   }
 
@@ -108,6 +146,15 @@ class StoreTheme extends ChangeNotifier {
   String country = 'Seoul';
   Color textColor = Colors.white;
   Color clockColor = Colors.white;
+
+  @override
+  String toString() {
+    return ('$clockTheme, '
+        '$backgroundTheme, '
+        '$country, '
+        '$textColor, '
+        '$clockColor, ');
+  }
 
   void setBackground(index) {
     backgroundTheme = 'assets/background/background$index.jpg';
