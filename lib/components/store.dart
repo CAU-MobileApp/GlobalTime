@@ -17,6 +17,7 @@ class Store extends ChangeNotifier {
   String country = 'Asia/Seoul';
   int index = 0;
   Map countryDict = {};
+  var local;
   late Timer timer;
   final List<String> countryListParsed = List.empty(growable: true);
   final List<StoreTheme> storedThemes = List.empty(growable: true);
@@ -90,17 +91,17 @@ class Store extends ChangeNotifier {
     hourOffset = data['utc_offset'].substring(1, 3);
     minuteOffset = data['utc_offset'].substring(4, 6);
     var now = DateTime.now();
-    now = now.add(Duration(
-        hours: int.parse(hourOffset), minutes: int.parse(minuteOffset)));
-    secondsAngle = (pi / 30) * now.second;
-    minutesAngle = (pi / 30) * now.minute;
-    hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
+    local = now.timeZoneOffset.toString().split(':');
     notifyListeners();
   }
 
   void setTime() {
     timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       var now = DateTime.now();
+      var local = now.timeZoneOffset.toString().split(':');
+      now = now.add(Duration(
+          hours: int.parse(hourOffset) - int.parse(local[0]),
+          minutes: int.parse(hourOffset) - int.parse(local[1])));
       secondsAngle = (pi / 30) * now.second;
       minutesAngle = (pi / 30) * now.minute;
       hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
