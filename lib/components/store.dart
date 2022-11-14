@@ -25,16 +25,19 @@ class Store extends ChangeNotifier {
   getData() async {
     var storage = await SharedPreferences.getInstance();
     var temp = storage.getStringList('themeData');
-    temp?.forEach((element) {
-      StoreTheme temp2 = StoreTheme();
-      var token = element.split(',');
-      temp2.clockTheme = token[0].trim();
-      temp2.backgroundTheme = token[1].trim();
-      temp2.country = token[2].trim();
-      temp2.textColor = Color(int.parse(token[3].substring(7, 17)));
-      temp2.clockColor = Color(int.parse(token[4].substring(7, 17)));
-      storedThemes.add(temp2);
-    });
+    print(temp);
+    if (temp != null) {
+      for (var element in temp) {
+        StoreTheme temp2 = StoreTheme();
+        var token = element.split(',');
+        temp2.clockTheme = token[0].trim();
+        temp2.backgroundTheme = token[1].trim();
+        temp2.country = token[2].trim();
+        temp2.textColor = Color(int.parse(token[3].substring(7, 17)));
+        temp2.clockColor = Color(int.parse(token[4].substring(7, 17)));
+        storedThemes.add(temp2);
+      }
+    }
   }
 
   saveData() async {

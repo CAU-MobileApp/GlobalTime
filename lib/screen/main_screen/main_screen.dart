@@ -3,8 +3,6 @@ import 'package:world_time/components/store.dart';
 import 'package:world_time/screen/clock_screen/clock_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/screen/custom_screen/custom_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.title});
@@ -17,10 +15,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     Provider.of<Store>(context, listen: false)
         .getCountryList(); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
     Provider.of<Store>(context, listen: false).getData();
+    super.initState();
   }
 
   @override
@@ -33,7 +31,6 @@ class _MainScreenState extends State<MainScreen> {
               padding: const EdgeInsets.fromLTRB(0, 0, 14, 0),
               child: IconButton(
                   onPressed: () {
-                    Provider.of<Store>(context, listen: false).saveData();
                     Provider.of<Store>(context, listen: false).setIndex(-1);
                     Provider.of<Store>(context, listen: false)
                         .setCountry('Seoul');
