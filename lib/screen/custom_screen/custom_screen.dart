@@ -22,7 +22,6 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
     // TODO: implement initState
     Future.delayed(Duration(seconds: 0)).then((value) =>
         Provider.of<StoreTheme>(context, listen: false).clearTheme());
-    print(Provider.of<StoreTheme>(context, listen: false).country);
     super.initState();
   }
 
