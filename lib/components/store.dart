@@ -101,8 +101,6 @@ class Store extends ChangeNotifier {
   void setTime() {
     timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       var now = DateTime.now();
-      now = now.add(Duration(
-          hours: int.parse(hourOffset), minutes: int.parse(minuteOffset)));
       secondsAngle = (pi / 30) * now.second;
       minutesAngle = (pi / 30) * now.minute;
       hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);

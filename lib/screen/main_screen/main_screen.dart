@@ -34,8 +34,8 @@ class _MainScreenState extends State<MainScreen> {
                     Provider.of<Store>(context, listen: false).setIndex(-1);
                     Provider.of<Store>(context, listen: false)
                         .setCountry('Seoul');
-                    Provider.of<Store>(context, listen: false)
-                        .getTime('Asia/Seoul');
+                    Provider.of<Store>(context, listen: false).getTime(
+                        Provider.of<Store>(context, listen: false).country);
                     Navigator.push(context, MaterialPageRoute(builder: (_) {
                       return CustomizeScreen();
                     }));

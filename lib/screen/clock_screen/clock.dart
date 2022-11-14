@@ -21,6 +21,7 @@ class _ClockWidgetState extends State<ClockWidget> {
     context.watch<Store>().setTime();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
