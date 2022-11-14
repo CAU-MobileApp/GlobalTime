@@ -56,8 +56,13 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                         Provider.of<Store>(context, listen: false)
                             .getTheme(theme);
                         Navigator.pop(context);
-                      }, child: const Text('Add',
-                    style: TextStyle(color: Colors.white),),
+                      }, child: const Text('ADD',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontFamily: 'main',
+                      ),
+                    ),
                     ),
                   // IconButton(
                   //     onPressed: () {
