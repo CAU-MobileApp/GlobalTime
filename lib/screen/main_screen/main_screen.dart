@@ -88,22 +88,26 @@ class _MainScreenState extends State<MainScreen> {
               child:SingleChildScrollView(
                 physics: ClampingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(5, 20, 5, 20),
+                  padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
                   child: Column(
                     children: [
                       Container(
                         width: 300,
                         height: 300,
+                        // decoration: BoxDecoration(
+                        //   image: DecorationImage(
+                        //       image: AssetImage(
+                        //         context
+                        //             .watch<Store>()
+                        //             .storedThemes[0]
+                        //             .backgroundTheme,
+                        //       ),
+                        //       fit: BoxFit.cover
+                        //   ),
+                        //   borderRadius: BorderRadius.circular(30),
+                        // ),
                         decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(
-                                context
-                                    .watch<Store>()
-                                    .storedThemes[0]
-                                    .backgroundTheme,
-                              ),
-                              fit: BoxFit.cover
-                          ),
+                          border: Border.all(),
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child:
@@ -126,7 +130,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                       const SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                       ScrollConfiguration(
                         behavior: ScrollBehavior().copyWith(overscroll: false),
