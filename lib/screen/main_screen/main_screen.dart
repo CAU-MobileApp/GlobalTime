@@ -88,24 +88,23 @@ class _MainScreenState extends State<MainScreen> {
               child:SingleChildScrollView(
                 physics: ClampingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  padding: const EdgeInsets.fromLTRB(5, 20, 5, 20),
                   child: Column(
                     children: [
                       Container(
                         width: 300,
                         height: 300,
                         decoration: BoxDecoration(
-                          color: Colors.white70,
+                          image: DecorationImage(
+                              image: AssetImage(
+                                context
+                                    .watch<Store>()
+                                    .storedThemes[0]
+                                    .backgroundTheme,
+                              ),
+                              fit: BoxFit.cover
+                          ),
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.black38,width: 2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 0,
-                              blurRadius: 5.0,
-                              offset: Offset(0, 5), // changes position of shadow
-                            ),
-                          ],
                         ),
                         child:
                         Padding(
@@ -116,9 +115,12 @@ class _MainScreenState extends State<MainScreen> {
                               Text(
                                 'Seoul',
                                 style: TextStyle(
-                                    fontFamily: 'main2',
-                                    fontSize: 30),
+                                  fontFamily: 'main2',
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
                               ),
+
                             ],
                           ),
                         ),
@@ -154,7 +156,7 @@ class _MainScreenState extends State<MainScreen> {
                                 child: Hero(
                                     tag: "$index",
                                     child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                                       child: Container(
                                           height: 100,
                                           decoration: BoxDecoration(
@@ -168,7 +170,15 @@ class _MainScreenState extends State<MainScreen> {
                                               fit: BoxFit.cover
                                             ),
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20.0)
+                                            borderRadius: BorderRadius.circular(20.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withOpacity(0.5),
+                                                spreadRadius: 5,
+                                                blurRadius: 7,
+                                                offset: Offset(0, 3), // changes position of shadow
+                                              ),
+                                            ],
                                           ),
                                           child: Card(
                                             margin:
@@ -183,7 +193,10 @@ class _MainScreenState extends State<MainScreen> {
                                                       .storedThemes[index]
                                                       .country,
                                                   style: const TextStyle(
-                                                      color: Colors.white, fontSize: 24),
+                                                    color: Colors.white,
+                                                    fontSize: 24,
+                                                    fontFamily: 'main2',
+                                                  ),
                                                 ),
                                                 trailing: IconButton(
                                                   icon: const Icon(
