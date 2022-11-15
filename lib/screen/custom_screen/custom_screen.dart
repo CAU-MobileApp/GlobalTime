@@ -176,12 +176,12 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                               Text(
                                 'Text',
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w600),
+                                    fontSize: 17, fontWeight: FontWeight.w600),
                               ),
                               Text(
                                 'Clock',
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w600),
+                                    fontSize: 17, fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),
