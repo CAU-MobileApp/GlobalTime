@@ -59,8 +59,8 @@ class _MainScreenState extends State<MainScreen> {
                               return CustomizeScreen();
                             }));
                           },
-                          backgroundColor: Color(0xFF222324),
-                          // backgroundColor: Colors.grey,
+                          // backgroundColor: Color(0xFF222324),
+                          backgroundColor: Colors.grey,
                           elevation: 3,
                           child: const Icon(Icons.add),
                         ),
