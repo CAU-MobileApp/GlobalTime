@@ -105,22 +105,22 @@ class _MainScreenState extends State<MainScreen> {
                         Container(
                           width: 300,
                           height: 300,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(
-                                  context
-                                      .watch<Store>()
-                                      .storedThemes[0]
-                                      .backgroundTheme,
-                                ),
-                                fit: BoxFit.cover
-                            ),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
                           // decoration: BoxDecoration(
-                          //   border: Border.all(),
+                          //   image: DecorationImage(
+                          //       image: AssetImage(
+                          //         context
+                          //             .watch<Store>()
+                          //             .storedThemes[0]
+                          //             .backgroundTheme,
+                          //       ),
+                          //       fit: BoxFit.cover
+                          //   ),
                           //   borderRadius: BorderRadius.circular(30),
                           // ),
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                           child:
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
