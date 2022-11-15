@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
       Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey],
+            colors: [Colors.white, Colors.brown],
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter
           ),
@@ -59,7 +59,8 @@ class _MainScreenState extends State<MainScreen> {
                               return CustomizeScreen();
                             }));
                           },
-                          backgroundColor: Colors.blueGrey,
+                          backgroundColor: Color(0xFF222324),
+                          // backgroundColor: Colors.grey,
                           elevation: 3,
                           child: const Icon(Icons.add),
                         ),
