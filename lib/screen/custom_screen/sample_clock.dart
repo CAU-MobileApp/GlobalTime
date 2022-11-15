@@ -41,9 +41,11 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                       style: context.watch<Store>().index == -1
                           ? TextStyle(
                               fontSize: 32,
+                              fontFamily: 'main2',
                               color: context.watch<StoreTheme>().textColor)
                           : TextStyle(
                               fontSize: 32,
+                              fontFamily: 'main2',
                               color: context
                                   .watch<Store>()
                                   .storedThemes[context.watch<Store>().index]
@@ -54,9 +56,11 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                       style: context.watch<Store>().index == -1
                           ? TextStyle(
                               fontSize: 32,
+                              fontFamily: 'main2',
                               color: context.watch<StoreTheme>().textColor)
                           : TextStyle(
                               fontSize: 32,
+                              fontFamily: 'main2',
                               color: context
                                   .watch<Store>()
                                   .storedThemes[context.watch<Store>().index]
@@ -66,85 +70,88 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                 ),
               ),
             ),
-            Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                  color: Colors.white30,
-                  border: Border.all(color: Colors.black45, width: 10),
-                  borderRadius: BorderRadius.circular(150)),
-              child: Stack(
-                children: [
-                  context.watch<Store>().index == -1
-                      ? Image.asset(
-                          context.watch<StoreTheme>().clockTheme,
-                          color: context.watch<StoreTheme>().clockColor,
-                          fit: BoxFit.fill,
-                        )
-                      : Image.asset(
-                          context
-                              .watch<Store>()
-                              .storedThemes[context.watch<Store>().index]
-                              .clockTheme,
-                          color: context
-                              .watch<Store>()
-                              .storedThemes[context.watch<Store>().index]
-                              .clockColor,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 80),
+              child: Container(
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                    color: Colors.white30,
+                    border: Border.all(color: Colors.black45, width: 10),
+                    borderRadius: BorderRadius.circular(150)),
+                child: Stack(
+                  children: [
+                    context.watch<Store>().index == -1
+                        ? Image.asset(
+                            context.watch<StoreTheme>().clockTheme,
+                            color: context.watch<StoreTheme>().clockColor,
+                            fit: BoxFit.fill,
+                          )
+                        : Image.asset(
+                            context
+                                .watch<Store>()
+                                .storedThemes[context.watch<Store>().index]
+                                .clockTheme,
+                            color: context
+                                .watch<Store>()
+                                .storedThemes[context.watch<Store>().index]
+                                .clockColor,
+                          ),
+                    // Seconds
+                    Transform.rotate(
+                      angle: context.watch<Store>().secondsAngle,
+                      child: Container(
+                        child: Container(
+                          height: 120,
+                          width: 2,
+                          decoration: BoxDecoration(
+                              color: Colors.black45,
+                              borderRadius: BorderRadius.circular(10)),
                         ),
-                  // Seconds
-                  Transform.rotate(
-                    angle: context.watch<Store>().secondsAngle,
-                    child: Container(
-                      child: Container(
-                        height: 120,
-                        width: 2,
-                        decoration: BoxDecoration(
-                            color: Colors.black45,
-                            borderRadius: BorderRadius.circular(10)),
+                        alignment: Alignment(0, -0.45),
                       ),
-                      alignment: Alignment(0, -0.45),
                     ),
-                  ),
-                  // Minutes
-                  Transform.rotate(
-                    angle: context.watch<Store>().minutesAngle,
-                    child: Container(
+                    // Minutes
+                    Transform.rotate(
+                      angle: context.watch<Store>().minutesAngle,
                       child: Container(
-                        height: 85,
-                        width: 4,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
+                        child: Container(
+                          height: 85,
+                          width: 4,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        alignment: Alignment(0, -0.4),
                       ),
-                      alignment: Alignment(0, -0.4),
                     ),
-                  ),
-                  // Hours
-                  Transform.rotate(
-                    angle: context.watch<Store>().hoursAngle,
-                    child: Container(
+                    // Hours
+                    Transform.rotate(
+                      angle: context.watch<Store>().hoursAngle,
                       child: Container(
-                        height: 65,
-                        width: 3,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(10)),
+                        child: Container(
+                          height: 65,
+                          width: 3,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                        alignment: Alignment(0, -0.25),
                       ),
-                      alignment: Alignment(0, -0.25),
                     ),
-                  ),
-                  // Dot
-                  Container(
-                    child: Container(
-                      height: 15,
-                      width: 15,
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(50)),
+                    // Dot
+                    Container(
+                      child: Container(
+                        height: 15,
+                        width: 15,
+                        decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(50)),
+                      ),
+                      alignment: Alignment(0, 0),
                     ),
-                    alignment: Alignment(0, 0),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
