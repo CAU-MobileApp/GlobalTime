@@ -31,25 +31,55 @@ class _MainScreenState extends State<MainScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('My\nClock',
+                  const Text('My\nClock',
                     style: TextStyle(
                         fontFamily: 'main',
                         fontSize: 40),
                   ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      Provider.of<Store>(context, listen: false).setIndex(-1);
-                      Provider.of<Store>(context, listen: false)
-                          .setCountry('Seoul');
-                      Provider.of<Store>(context, listen: false)
-                          .getTime('Asia/Seoul');
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return CustomizeScreen();
-                      }));
-                    },
-                    backgroundColor: Colors.grey ,
-                    elevation: 3,
-                    child: const Icon(Icons.add),
+                  Column(
+                    children: [
+                      FloatingActionButton(
+                        onPressed: () {
+                          Provider.of<Store>(context, listen: false).setIndex(-1);
+                          Provider.of<Store>(context, listen: false)
+                              .setCountry('Seoul');
+                          Provider.of<Store>(context, listen: false)
+                              .getTime('Asia/Seoul');
+                          Navigator.push(context, MaterialPageRoute(builder: (_) {
+                            return CustomizeScreen();
+                          }));
+                        },
+                        backgroundColor: Colors.grey ,
+                        elevation: 3,
+                        child: const Icon(Icons.add),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        child: Row(
+                          children: [
+                            FloatingActionButton.small(
+                                heroTag: "clearButton",
+                                backgroundColor: Color(0xFF222324),
+                                onPressed: () {
+                                  Provider.of<Store>(context, listen: false).removeData();
+                                  Provider.of<Store>(context, listen: false).deleteAll();
+                                },
+                                child: Icon(Icons.refresh),
+                            ),
+                            FloatingActionButton.small(
+                                heroTag: "saveButton",
+                                backgroundColor: Color(0xFF222324),
+                                onPressed: () {
+                                  Provider.of<Store>(context, listen: false).removeData();
+                                  Future.delayed(Duration(milliseconds: 10)).then((value) =>
+                                      Provider.of<Store>(context, listen: false).saveData());
+                                },
+                                child: Icon(Icons.save),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -76,7 +106,6 @@ class _MainScreenState extends State<MainScreen> {
                               offset: Offset(0, 5), // changes position of shadow
                             ),
                           ],
-
                         ),
                         child:
                         Padding(
@@ -94,8 +123,7 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                       ),
-
-                      SizedBox(
+                      const SizedBox(
                         height: 30,
                       ),
                       ScrollConfiguration(
@@ -201,52 +229,42 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
               ),
-
             ),
-
-
-            Stack(children: [
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: FloatingActionButton(
-                    heroTag: "clearButton",
-                    backgroundColor: Color(0xFF222324),
-                    onPressed: () {
-                      Provider.of<Store>(context, listen: false).removeData();
-                      Provider.of<Store>(context, listen: false).deleteAll();
-                    },
-                    child: Icon(Icons.refresh),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: FloatingActionButton(
-                    heroTag: "saveButton",
-                    backgroundColor: Color(0xFF222324),
-                    onPressed: () {
-                      Provider.of<Store>(context, listen: false).removeData();
-                      Future.delayed(Duration(milliseconds: 10)).then((value) =>
-                          Provider.of<Store>(context, listen: false).saveData());
-                    },
-                    child: Icon(Icons.save),
-                  ),
-                ),
-              ),
-            ]),
-
-
-
-
-
+            // Stack(children: [
+            //   Align(
+            //     alignment: Alignment.bottomLeft,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(16.0),
+            //       child: FloatingActionButton(
+            //         heroTag: "clearButton",
+            //         backgroundColor: Color(0xFF222324),
+            //         onPressed: () {
+            //           Provider.of<Store>(context, listen: false).removeData();
+            //           Provider.of<Store>(context, listen: false).deleteAll();
+            //         },
+            //         child: Icon(Icons.refresh),
+            //       ),
+            //     ),
+            //   ),
+            //   Align(
+            //     alignment: Alignment.bottomRight,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(16.0),
+            //       child: FloatingActionButton(
+            //         heroTag: "saveButton",
+            //         backgroundColor: Color(0xFF222324),
+            //         onPressed: () {
+            //           Provider.of<Store>(context, listen: false).removeData();
+            //           Future.delayed(Duration(milliseconds: 10)).then((value) =>
+            //               Provider.of<Store>(context, listen: false).saveData());
+            //         },
+            //         child: Icon(Icons.save),
+            //       ),
+            //     ),
+            //   ),
+            // ]),
           ]
-
       ),
-
     );
   }
 }
