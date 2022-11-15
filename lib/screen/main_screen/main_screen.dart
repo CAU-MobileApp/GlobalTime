@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
       Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.brown],
+            colors: [Colors.white, Colors.grey],
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter
           ),
@@ -59,8 +59,8 @@ class _MainScreenState extends State<MainScreen> {
                               return CustomizeScreen();
                             }));
                           },
-                          // backgroundColor: Color(0xFF222324),
-                          backgroundColor: Colors.grey,
+                          backgroundColor: Color(0xFF222324),
+                          // backgroundColor: Colors.grey,
                           elevation: 3,
                           child: const Icon(Icons.add),
                         ),
@@ -116,6 +116,15 @@ class _MainScreenState extends State<MainScreen> {
                           //       fit: BoxFit.cover
                           //   ),
                           //   borderRadius: BorderRadius.circular(30),
+                          //     boxShadow: [
+                          //       BoxShadow(
+                          //         color: Colors.grey.withOpacity(0.5),
+                          //         spreadRadius: 5,
+                          //         blurRadius: 7,
+                          //         offset: Offset(0, 3),
+                          //       )
+                          //     ]
+                          //
                           // ),
                           decoration: BoxDecoration(
                             border: Border.all(),
@@ -144,12 +153,15 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                         ReorderableListView.builder(
                             shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: context.watch<Store>().storedThemes.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Dismissible(
                                 key: ValueKey(context.watch<Store>().storedThemes[index]),
                                 onDismissed: (direction) {
                                   Provider.of<Store>(context, listen: false).deleteTheme(index);
+                                  Future.delayed(Duration(milliseconds: 10)).then((value) =>
+                                      Provider.of<Store>(context, listen: false).saveData());
                                 },
                                 child: GestureDetector(
                                   onTap: () {
@@ -181,7 +193,6 @@ class _MainScreenState extends State<MainScreen> {
                                                 ),
                                                 fit: BoxFit.cover
                                               ),
-                                              color: Colors.white,
                                               borderRadius: BorderRadius.circular(20.0),
                                               boxShadow: [
                                                 BoxShadow(
@@ -193,9 +204,12 @@ class _MainScreenState extends State<MainScreen> {
                                               ],
                                             ),
                                             child: Card(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20.0)
+                                              ),
                                               margin:
                                               EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                                              color: Colors.black54,
+                                              color: Colors.black26,
                                               child: Center(
                                                 child: ListTile(
                                                   /**Text 안에 list[i].country로 수정*/

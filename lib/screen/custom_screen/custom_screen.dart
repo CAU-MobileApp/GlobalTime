@@ -57,7 +57,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
               },
               child: const Text('ADD',
                 style: TextStyle(
-                  color: Colors.grey,
+                  color: Colors.white70,
                   fontSize: 20,
                   fontFamily: 'main',
                 ),
