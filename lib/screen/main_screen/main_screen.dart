@@ -137,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
                                 Text(
-                                  'Seoul',
+                                  'Chicago',
                                   style: TextStyle(
                                     fontFamily: 'main2',
                                     fontSize: 20,
