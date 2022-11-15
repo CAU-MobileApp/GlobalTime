@@ -27,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
       Column(
           children:[
             Padding(
-              padding: const EdgeInsets.fromLTRB(30, 70, 20, 10),
+              padding: const EdgeInsets.fromLTRB(40, 55, 20, 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -54,7 +54,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: const Icon(Icons.add),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
                         child: Row(
                           children: [
                             FloatingActionButton.small(
@@ -88,12 +88,12 @@ class _MainScreenState extends State<MainScreen> {
               child:SingleChildScrollView(
                 physics: ClampingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Column(
                     children: [
                       Container(
-                        width: 330,
-                        height: 330,
+                        width: 300,
+                        height: 300,
                         decoration: BoxDecoration(
                           color: Colors.white70,
                           borderRadius: BorderRadius.circular(30),
@@ -154,20 +154,22 @@ class _MainScreenState extends State<MainScreen> {
                                 child: Hero(
                                     tag: "$index",
                                     child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                                      padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
                                       child: Container(
                                           height: 100,
                                           decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                                    context
-                                                        .watch<Store>()
-                                                        .storedThemes[index]
-                                                        .backgroundTheme,
-                                                  ),
-                                                  fit: BoxFit.cover),
-                                              color: Colors.black54,
-                                              borderRadius: BorderRadius.circular(10.0)),
+                                            image: DecorationImage(
+                                              image: AssetImage(
+                                                context
+                                                    .watch<Store>()
+                                                    .storedThemes[index]
+                                                    .backgroundTheme,
+                                              ),
+                                              fit: BoxFit.cover
+                                            ),
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(20.0)
+                                          ),
                                           child: Card(
                                             margin:
                                             EdgeInsets.symmetric(horizontal: 0, vertical: 0),
