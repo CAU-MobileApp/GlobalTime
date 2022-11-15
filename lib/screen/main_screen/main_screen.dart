@@ -53,6 +53,8 @@ class _MainScreenState extends State<MainScreen> {
               key: ValueKey(context.watch<Store>().storedThemes[index]),
               onDismissed: (direction) {
                 Provider.of<Store>(context, listen: false).deleteTheme(index);
+                Future.delayed(Duration(milliseconds: 10)).then((value) =>
+                    Provider.of<Store>(context, listen: false).saveData());
               },
               child: GestureDetector(
                 onTap: () {
@@ -73,19 +75,19 @@ class _MainScreenState extends State<MainScreen> {
                     child: Container(
                         height: 100,
                         decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(
-                                  context
-                                      .watch<Store>()
-                                      .storedThemes[index]
-                                      .backgroundTheme,
-                                ),
-                                fit: BoxFit.cover),
-                            color: Colors.black54),
+                          image: DecorationImage(
+                              image: AssetImage(
+                                context
+                                    .watch<Store>()
+                                    .storedThemes[index]
+                                    .backgroundTheme,
+                              ),
+                              fit: BoxFit.cover),
+                        ),
                         child: Card(
                           margin:
                               EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                          color: Colors.black54,
+                          color: Colors.black26,
                           child: Center(
                             child: ListTile(
                               /**Text 안에 list[i].country로 수정*/
