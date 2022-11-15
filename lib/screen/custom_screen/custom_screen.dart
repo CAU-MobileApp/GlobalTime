@@ -152,18 +152,20 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
               child: Row(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.black12,
-                              width: 4,
-                            ))),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        right: BorderSide(
+                          color: Colors.black12,
+                          width: 4,
+                        )
+                      )
+                    ),
                     child: RotatedBox(
                       quarterTurns: 1,
                       child: Align(
                         alignment: Alignment.center,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(5.0),
                           child: TabBar(
                             labelColor: Colors.black,
                             unselectedLabelColor: Colors.grey,
