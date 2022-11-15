@@ -71,6 +71,15 @@ flutter:
     - assets/background/small/
     - assets/clock_layout/
 
+
+  fonts:
+    - family: main
+      fonts:
+        - asset: assets/fonts/jalnan.ttf
+    - family: main2
+      fonts:
+        - asset: assets/fonts/agro.ttf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
