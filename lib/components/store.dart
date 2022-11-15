@@ -101,7 +101,7 @@ class Store extends ChangeNotifier {
       var local = now.timeZoneOffset.toString().split(':');
       now = now.add(Duration(
           hours: int.parse(hourOffset) - int.parse(local[0]),
-          minutes: int.parse(hourOffset) - int.parse(local[1])));
+          minutes: int.parse(minuteOffset) - int.parse(local[1])));
       secondsAngle = (pi / 30) * now.second;
       minutesAngle = (pi / 30) * now.minute;
       hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
