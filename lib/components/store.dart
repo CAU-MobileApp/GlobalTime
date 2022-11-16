@@ -109,7 +109,7 @@ class Store extends ChangeNotifier {
     });
   }
 
-  void getCountryList() async {
+  Future<void> getCountryList() async {
     Response response =
         await get(Uri.parse('http://worldtimeapi.org/api/timezone'));
     var data = jsonDecode(response.body);

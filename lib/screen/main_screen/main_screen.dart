@@ -15,8 +15,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
-    Provider.of<Store>(context, listen: false)
-        .getCountryList(); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
     Provider.of<Store>(context, listen: false).getData();
     super.initState();
   }
@@ -49,7 +47,15 @@ class _MainScreenState extends State<MainScreen> {
                     Column(
                       children: [
                         FloatingActionButton(
-                          onPressed: () {
+                          onPressed: () async{
+                            // countryDict이 비어 있음 --> api로 부터 세계 나라들 getCountry 연산 안 된 상태
+                            // --> await getCountryList 해서 리스트 로드 이후 시계 페이지로 가면 바로 볼 수 있게끔
+                            // --> 이러면 첫 실행 시도에 한해서 연산 속도 때문에 시계 페이지로 넘어갈 때 시간이 좀 걸리는 단점이 있음
+                            if (Provider.of<Store>(context, listen: false).countryDict.isEmpty){
+                              await Provider.of<Store>(context, listen: false)
+                                  .getCountryList();
+                            }
+
                             Provider.of<Store>(context, listen: false).setIndex(-1);
                             Provider.of<Store>(context, listen: false)
                                 .setCountry('Seoul');
