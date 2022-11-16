@@ -238,7 +238,7 @@ class _MainScreenState extends State<MainScreen> {
                                                     ),
                                                     /**onPressed 누르면, Customize Screen으로 이동*/
                                                     onPressed: () async{
-                                                      
+
                                                       //CountryList 완전히 load 된 후 실행하기 위함
                                                       if (Provider.of<Store>(context, listen: false).countryDict.isEmpty){
                                                         await Provider.of<Store>(context, listen: false)

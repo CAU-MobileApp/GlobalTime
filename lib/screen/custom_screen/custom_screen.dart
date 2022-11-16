@@ -346,6 +346,7 @@ class Country extends StatefulWidget {
 class _CountryState extends State<Country> {
   @override
   Widget build(BuildContext context) {
+    Store pvd = Provider.of<Store>(context, listen: false);
     return Center(
       child: Align(
         alignment: const Alignment(0.0, 1),
@@ -357,30 +358,18 @@ class _CountryState extends State<Country> {
             child: ListView(
               scrollDirection: Axis.vertical,
               children: List.generate(
-                  Provider.of<Store>(context).countryListParsed.length, (i) {
+                  pvd.countryListParsed.length, (i) {
                 return GestureDetector(
                   key: ValueKey(i),
                   child: ListTile(
                     title:
-                    Text(Provider.of<Store>(context).countryListParsed[i]),
+                    Text(pvd.countryListParsed[i]),
                     onTap: () {
-                      Provider.of<Store>(context, listen: false).setCountry(
-                          Provider.of<Store>(context, listen: false)
-                              .countryListParsed[i]); //새로 선택된 지역 정보로 text를 갱신
-                      Provider.of<Store>(context, listen: false).getTime(
-                          Provider.of<Store>(context, listen: false).country);
-                      Provider.of<Store>(context, listen: false).index == -1
-                          ? Provider.of<StoreTheme>(context, listen: false)
-                          .country =
-                      Provider.of<Store>(context, listen: false)
-                          .countryListParsed[i]
-                          : Provider.of<Store>(context, listen: false)
-                          .storedThemes[
-                      Provider.of<Store>(context, listen: false)
-                          .index]
-                          .country =
-                      Provider.of<Store>(context, listen: false)
-                          .countryListParsed[i]; //갱신된 지역 정보로 시간 또한 업데이트
+                      pvd.setCountry(pvd.countryListParsed[i]); //새로 선택된 지역 정보로 text를 갱신
+                      pvd.getTime(pvd.country);
+                      pvd.index == -1
+                          ? pvd.country = pvd.countryListParsed[i]
+                          : pvd.storedThemes[pvd.index].country = pvd.countryListParsed[i]; //갱신된 지역 정보로 시간 또한 업데이트
                     }, //StoreTheme에 있던 country정보를 Store에서 일괄 관리하는게 나을 것 같아서 이전하였습니다
                   ),
                 );
