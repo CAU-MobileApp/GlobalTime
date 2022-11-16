@@ -131,6 +131,8 @@ class Store extends ChangeNotifier {
         }
       }
     }
+    countryListParsed.sort();
+
     notifyListeners();
   }
 
