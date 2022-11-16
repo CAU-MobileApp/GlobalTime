@@ -237,7 +237,14 @@ class _MainScreenState extends State<MainScreen> {
                                                       size: 30,
                                                     ),
                                                     /**onPressed 누르면, Customize Screen으로 이동*/
-                                                    onPressed: () {
+                                                    onPressed: () async{
+                                                      
+                                                      //CountryList 완전히 load 된 후 실행하기 위함
+                                                      if (Provider.of<Store>(context, listen: false).countryDict.isEmpty){
+                                                        await Provider.of<Store>(context, listen: false)
+                                                            .getCountryList();
+                                                      }
+
                                                       //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
                                                       Provider.of<Store>(context, listen: false)
                                                           .setIndex(index);
