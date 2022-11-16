@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -49,12 +50,12 @@ class Store extends ChangeNotifier {
       localData.add(temp);
     }
     storage.setStringList('themeData', localData);
+    localData.clear();
   }
 
   removeData() async {
     var storage = await SharedPreferences.getInstance();
     storage.remove('themeData');
-    localData.clear();
   }
 
   void reOrder(oldIndex, newIndex) {
@@ -75,6 +76,7 @@ class Store extends ChangeNotifier {
 
   void deleteTheme(index) {
     storedThemes.removeAt(index);
+    saveData();
     notifyListeners();
   }
 
@@ -135,6 +137,9 @@ class Store extends ChangeNotifier {
   }
 
   void setCountry(text) {
+    text ?? 'Seoul';
+    print(text);
+    print(countryDict[text]);
     country = countryDict[text] +
         text; //선택된 나라의 시간대를 가져오기 위해 string을 api format에 맞게 바꿨습니다
     countryParsed = text; //"지역" 정보만 추출
@@ -148,6 +153,7 @@ class StoreTheme extends ChangeNotifier {
   String country = 'Seoul';
   Color textColor = Colors.white;
   Color clockColor = Colors.white;
+  var imageFile;
 
   @override
   String toString() {
@@ -158,8 +164,19 @@ class StoreTheme extends ChangeNotifier {
         '$clockColor, ');
   }
 
+  void selectImage(XFile image) {
+    imageFile = image;
+    print(imageFile.path);
+    notifyListeners();
+  }
+
   void setBackground(index) {
     backgroundTheme = 'assets/background/background$index.jpg';
+    notifyListeners();
+  }
+
+  void removeBackground() {
+    backgroundTheme = '';
     notifyListeners();
   }
 

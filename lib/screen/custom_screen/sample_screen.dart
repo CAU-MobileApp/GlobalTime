@@ -16,7 +16,14 @@ class SampleScreen extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: context.watch<Store>().index == -1
-                    ? AssetImage(context.watch<StoreTheme>().backgroundTheme)
+                    ? (AssetImage(
+                                context.watch<StoreTheme>().backgroundTheme) ==
+                            ''
+                        ? Image.file(context.watch<StoreTheme>().imageFile)
+                            as ImageProvider
+                        : AssetImage(
+                                context.watch<StoreTheme>().backgroundTheme)
+                            as ImageProvider)
                     : AssetImage(context
                         .watch<Store>()
                         .storedThemes[context.watch<Store>().index]
