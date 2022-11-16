@@ -83,7 +83,7 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getTime(country) async {
+  Future<void> getTime(country) async {
     Response response =
         await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
     Map data = jsonDecode(response.body);
@@ -135,10 +135,12 @@ class Store extends ChangeNotifier {
   }
 
   void setCountry(text) {
-    country = countryDict[text] +
-        text; //선택된 나라의 시간대를 가져오기 위해 string을 api format에 맞게 바꿨습니다
-    countryParsed = text; //"지역" 정보만 추출
-    notifyListeners();
+    if (countryDict.isNotEmpty){
+      country = countryDict[text] +
+          text; //선택된 나라의 시간대를 가져오기 위해 string을 api format에 맞게 바꿨습니다
+      countryParsed = text; //"지역" 정보만 추출
+      notifyListeners();
+    }
   }
 }
 
