@@ -365,11 +365,7 @@ class _CountryState extends State<Country> {
                     title:
                     Text(pvd.countryListParsed[i]),
                     onTap: () {
-                      pvd.setCountry(pvd.countryListParsed[i]); //새로 선택된 지역 정보로 text를 갱신
-                      pvd.getTime(pvd.country);
-                      pvd.index == -1
-                          ? pvd.country = pvd.countryListParsed[i]
-                          : pvd.storedThemes[pvd.index].country = pvd.countryListParsed[i]; //갱신된 지역 정보로 시간 또한 업데이트
+                      setPVD(pvd, i);
                     }, //StoreTheme에 있던 country정보를 Store에서 일괄 관리하는게 나을 것 같아서 이전하였습니다
                   ),
                 );
@@ -381,3 +377,13 @@ class _CountryState extends State<Country> {
     );
   }
 }
+
+void setPVD(Store pvd, int i){
+  pvd.setCountry(pvd.countryListParsed[i]);
+  pvd.getTime(pvd.country);
+  pvd.index == -1
+      ? pvd.country = pvd.countryListParsed[i]
+      : pvd.storedThemes[pvd.index].country = pvd.countryListParsed[i];
+}
+
+
