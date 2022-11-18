@@ -346,6 +346,15 @@ class Country extends StatefulWidget {
 
 class _CountryState extends State<Country> {
   final _formKey = GlobalKey<FormState>();
+  final _searchController = TextEditingController();
+  final focus = FocusNode();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    focus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -370,6 +379,7 @@ class _CountryState extends State<Country> {
         searchInputDecoration: InputDecoration(   //input box 관련 ui
           filled: true,
           fillColor: Colors.white,
+          labelText: "Enter a Valid Country",
           enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Colors.grey,
@@ -405,26 +415,27 @@ class _CountryState extends State<Country> {
         suggestionState: Suggestion.expand,
         textInputAction: TextInputAction.done,
         onSubmit: (value){
-            if (pvdStore.countryListParsed.contains(value)){
+            if (pvdStore.countryListParsed.contains(value) && value.isNotEmpty){  //validity 검사
               pvdStore.setCountry(value); //새로 선택된 지역 정보로 text를 갱신
               pvdStore.getTime(pvdStore.country);
               pvdStore.index == -1
                   ? pvdStoreTheme.country = value
                   : pvdStore.storedThemes[pvdStore.index].country = value;
             }
+            else{
+              setState(() {
+                _searchController.text = 'Please Enter a Valid Country';
+              });
+            }
         },
         hint: 'Search Country',
+        focusNode: focus,
+        controller: _searchController,
         hasOverlay: false,
         searchStyle: const TextStyle(
           fontSize: 18,
           color: Colors.black,
         ),
-        // validator: (x) {
-        //   if (!pvd.countryListParsed.contains(x) || x!.isEmpty) {
-        //     return 'Please Enter a Valid Country';
-        //   }
-        //   return null;
-        // },
         maxSuggestionsInViewPort: 5,
         itemHeight: 50,
         onSuggestionTap: (x) {},
