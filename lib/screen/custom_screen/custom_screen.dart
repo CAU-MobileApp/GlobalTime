@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:world_time/components/store.dart';
@@ -348,6 +349,7 @@ class _CountryState extends State<Country> {
   final _formKey = GlobalKey<FormState>();
   final _searchController = TextEditingController();
   final focus = FocusNode();
+  var _hint = "Search Country";
 
   @override
   void dispose() {
@@ -361,85 +363,105 @@ class _CountryState extends State<Country> {
     Store pvdStore = Provider.of<Store>(context, listen: false);
     StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
 
-    return Form(
-      key: _formKey,
-      child: SearchField(     //https://pub.dev/packages/searchfield 패키지 사용
-        suggestions: pvdStore.countryListParsed
-            .map((country) => SearchFieldListItem(country,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(country,
-                  style: const TextStyle(color: Colors.black),
+    return Stack(
+      children: [
+        Form(
+          key: _formKey,
+          child: SearchField(     //https://pub.dev/packages/searchfield 패키지 사용
+            suggestions: pvdStore.countryListParsed
+                .map((country) => SearchFieldListItem(country,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(country,
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ),
+                )))
+                .toList(),
+            searchInputDecoration: InputDecoration(   //input box 관련 ui
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
                 ),
+                borderRadius: BorderRadius.circular(16.0),
               ),
-            )))
-            .toList(),
-        searchInputDecoration: InputDecoration(   //input box 관련 ui
-          filled: true,
-          fillColor: Colors.white,
-          labelText: "Enter a Valid Country",
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.grey,
-              width: 3.0,
+              disabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              border: const OutlineInputBorder(),
             ),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          disabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.grey,
-              width: 3.0,
+            suggestionsDecoration: const BoxDecoration(   //검색창 리스트 목록 관련 ui
+              borderRadius: BorderRadius.all(
+                  Radius.circular(16.0)
+              ),
+              color: Colors.white,
             ),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.grey,
-              width: 3.0,
-            ),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          border: const OutlineInputBorder(),
-        ),
-        suggestionsDecoration: const BoxDecoration(   //검색창 리스트 목록 관련 ui
-          borderRadius: BorderRadius.all(
-            Radius.circular(16.0)
-          ),
-          color: Colors.white,
-        ),
-        suggestionItemDecoration: const BoxDecoration(  //검색창 리스트 개별 아이템 관련 ui
+            suggestionItemDecoration: const BoxDecoration(  //검색창 리스트 개별 아이템 관련 ui
 
+            ),
+            suggestionState: Suggestion.expand,
+            textInputAction: TextInputAction.done,
+            onSubmit: (value){
+              if (pvdStore.countryListParsed.contains(value) && value.isNotEmpty){  //validity 검사
+                pvdStore.setCountry(value); //새로 선택된 지역 정보로 text를 갱신
+                pvdStore.getTime(pvdStore.country);
+                pvdStore.index == -1
+                    ? pvdStoreTheme.country = value
+                    : pvdStore.storedThemes[pvdStore.index].country = value;
+                _searchController.text = '';
+              }
+              else{
+                _searchController.text = '';
+              }
+            },
+            hint: _hint,
+            focusNode: focus,
+            controller: _searchController,
+            hasOverlay: false,
+            searchStyle: const TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+            ),
+            maxSuggestionsInViewPort: 5,
+            itemHeight: 50,
+            onSuggestionTap: (x) {},
+          ),
         ),
-        suggestionState: Suggestion.expand,
-        textInputAction: TextInputAction.done,
-        onSubmit: (value){
-            if (pvdStore.countryListParsed.contains(value) && value.isNotEmpty){  //validity 검사
-              pvdStore.setCountry(value); //새로 선택된 지역 정보로 text를 갱신
-              pvdStore.getTime(pvdStore.country);
-              pvdStore.index == -1
-                  ? pvdStoreTheme.country = value
-                  : pvdStore.storedThemes[pvdStore.index].country = value;
-            }
-            else{
-              setState(() {
-                _searchController.text = 'Please Enter a Valid Country';
-              });
-            }
-        },
-        hint: 'Search Country',
-        focusNode: focus,
-        controller: _searchController,
-        hasOverlay: false,
-        searchStyle: const TextStyle(
-          fontSize: 18,
-          color: Colors.black,
-        ),
-        maxSuggestionsInViewPort: 5,
-        itemHeight: 50,
-        onSuggestionTap: (x) {},
-      ),
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(0, 12, 12, 0),
+        //   child: Align(
+        //     alignment: Alignment.topRight,
+        //     child: IconButton(
+        //       icon: const Icon(Icons.search),
+        //       onPressed: (){
+        //         if (pvdStore.countryListParsed.contains(_searchController.text) && _searchController.text.isNotEmpty){  //validity 검사
+        //           pvdStore.setCountry(_searchController.text); //새로 선택된 지역 정보로 text를 갱신
+        //           pvdStore.getTime(pvdStore.country);
+        //           pvdStore.index == -1
+        //               ? pvdStoreTheme.country = _searchController.text
+        //               : pvdStore.storedThemes[pvdStore.index].country = _searchController.text;
+        //         }
+        //       },
+        //     ),
+        //   ),
+        // ),
+      ],
     );
 
     // return Center(

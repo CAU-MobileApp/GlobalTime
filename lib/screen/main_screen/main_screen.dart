@@ -52,6 +52,7 @@ class _MainScreenState extends State<MainScreen> {
                             // --> await getCountryList 해서 리스트 로드 이후 시계 페이지로 가면 바로 볼 수 있게끔
                             // --> 이러면 첫 실행 시도에 한해서 연산 속도 때문에 시계 페이지로 넘어갈 때 시간이 좀 걸리는 단점이 있음
                             if (Provider.of<Store>(context, listen: false).countryDict.isEmpty){
+                              print(Provider.of<Store>(context, listen: false).countryDict);
                               await Provider.of<Store>(context, listen: false)
                                   .getCountryList();
                             }
