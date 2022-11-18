@@ -349,11 +349,13 @@ class _CountryState extends State<Country> {
 
   @override
   Widget build(BuildContext context) {
-    Store pvd = Provider.of<Store>(context, listen: false);
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
+
     return Form(
       key: _formKey,
       child: SearchField(     //https://pub.dev/packages/searchfield 패키지 사용
-        suggestions: pvd.countryListParsed
+        suggestions: pvdStore.countryListParsed
             .map((country) => SearchFieldListItem(country,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
@@ -403,15 +405,13 @@ class _CountryState extends State<Country> {
         suggestionState: Suggestion.expand,
         textInputAction: TextInputAction.done,
         onSubmit: (value){
-          setState(() {
-            if (pvd.countryListParsed.contains(value)){
-              pvd.setCountry(value);
-              pvd.getTime(pvd.country);
-              pvd.index == -1
-                  ? pvd.country = value
-                  : pvd.storedThemes[pvd.index].country = value;
+            if (pvdStore.countryListParsed.contains(value)){
+              pvdStore.setCountry(value); //새로 선택된 지역 정보로 text를 갱신
+              pvdStore.getTime(pvdStore.country);
+              pvdStore.index == -1
+                  ? pvdStoreTheme.country = value
+                  : pvdStore.storedThemes[pvdStore.index].country = value;
             }
-          });
         },
         hint: 'Search Country',
         hasOverlay: false,
@@ -462,10 +462,3 @@ class _CountryState extends State<Country> {
   }
 }
 
-void setPVD(Store pvd, int i){
-  pvd.setCountry(pvd.countryListParsed[i]);
-  pvd.getTime(pvd.country);
-  pvd.index == -1
-      ? pvd.country = pvd.countryListParsed[i]
-      : pvd.storedThemes[pvd.index].country = pvd.countryListParsed[i];
-}
