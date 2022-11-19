@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
 import 'package:world_time/screen/custom_screen/sample_clock.dart';
+import 'dart:io';
 
 class SampleScreen extends StatelessWidget {
   const SampleScreen({Key? key}) : super(key: key);
@@ -16,18 +17,24 @@ class SampleScreen extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: context.watch<Store>().index == -1
-                    ? (AssetImage(
-                                context.watch<StoreTheme>().backgroundTheme) ==
+                    ? (context.watch<StoreTheme>().backgroundTheme == ''
+                        ? FileImage(File(context.watch<StoreTheme>().imageFile))
+                        : AssetImage(context
+                            .watch<StoreTheme>()
+                            .backgroundTheme)) as ImageProvider
+                    : (context
+                                .watch<Store>()
+                                .storedThemes[context.watch<Store>().index]
+                                .backgroundTheme ==
                             ''
-                        ? Image.file(context.watch<StoreTheme>().imageFile)
-                            as ImageProvider
-                        : AssetImage(
-                                context.watch<StoreTheme>().backgroundTheme)
-                            as ImageProvider)
-                    : AssetImage(context
-                        .watch<Store>()
-                        .storedThemes[context.watch<Store>().index]
-                        .backgroundTheme),
+                        ? FileImage(File(context
+                            .watch<Store>()
+                            .storedThemes[context.watch<Store>().index]
+                            .imageFile))
+                        : AssetImage(context
+                            .watch<Store>()
+                            .storedThemes[context.watch<Store>().index]
+                            .backgroundTheme) as ImageProvider),
                 fit: BoxFit.cover),
           ),
         ),

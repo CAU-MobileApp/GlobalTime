@@ -3,6 +3,7 @@ import 'package:world_time/components/store.dart';
 import 'package:world_time/screen/clock_screen/clock_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/screen/custom_screen/custom_screen.dart';
+import 'dart:io';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.title});
@@ -21,6 +22,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.watch<Store>().setTime();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -45,6 +51,12 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     FloatingActionButton(
                       onPressed: () async {
+                        if (Provider.of<Store>(context, listen: false)
+                            .countryDict
+                            .isEmpty) {
+                          await Provider.of<Store>(context, listen: false)
+                              .getCountryList();
+                        }
                         Provider.of<Store>(context, listen: false).setIndex(-1);
                         Provider.of<Store>(context, listen: false)
                             .setCountry('Seoul');
@@ -80,7 +92,6 @@ class _MainScreenState extends State<MainScreen> {
                             onPressed: () {
                               Provider.of<Store>(context, listen: false)
                                   .removeData();
-
                               Provider.of<Store>(context, listen: false)
                                   .saveData();
                             },
@@ -128,20 +139,125 @@ class _MainScreenState extends State<MainScreen> {
                       decoration: BoxDecoration(
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(30),
+                        image: DecorationImage(
+                            image: context.watch<Store>().storedThemes.isEmpty
+                                ? AssetImage('./background0.jpg')
+                                : (context
+                                            .watch<Store>()
+                                            .storedThemes[0]
+                                            .backgroundTheme ==
+                                        ''
+                                    ? FileImage(File(context
+                                        .watch<Store>()
+                                        .storedThemes[0]
+                                        .imageFile))
+                                    : AssetImage(context
+                                        .watch<Store>()
+                                        .storedThemes[0]
+                                        .backgroundTheme) as ImageProvider),
+                            fit: BoxFit.cover),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                        child: Stack(
+                          children: [
                             Text(
-                              'Chicago',
+                              context.watch<Store>().storedThemes.isEmpty
+                                  ? 'Seoul'
+                                  : context
+                                      .watch<Store>()
+                                      .storedThemes[0]
+                                      .country,
                               style: TextStyle(
                                 fontFamily: 'main2',
                                 fontSize: 20,
                                 color: Colors.white,
                               ),
                             ),
+                            Center(
+                              child: Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                    color: Colors.white30,
+                                    border: Border.all(
+                                        color: Colors.black45, width: 10),
+                                    borderRadius: BorderRadius.circular(150)),
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                      context
+                                          .watch<Store>()
+                                          .storedThemes[0]
+                                          .clockTheme,
+                                      color: context
+                                          .watch<Store>()
+                                          .storedThemes[0]
+                                          .clockColor,
+                                    ),
+                                    // Seconds
+                                    Transform.rotate(
+                                      angle:
+                                          context.watch<Store>().secondsAngle,
+                                      child: Container(
+                                        child: Container(
+                                          height: 100,
+                                          width: 2,
+                                          decoration: BoxDecoration(
+                                              color: Colors.black45,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                        alignment: Alignment(0, -0.45),
+                                      ),
+                                    ),
+                                    // Minutes
+                                    Transform.rotate(
+                                      angle:
+                                          context.watch<Store>().minutesAngle,
+                                      child: Container(
+                                        child: Container(
+                                          height: 65,
+                                          width: 4,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                        alignment: Alignment(0, -0.4),
+                                      ),
+                                    ),
+                                    // Hours
+                                    Transform.rotate(
+                                      angle: context.watch<Store>().hoursAngle,
+                                      child: Container(
+                                        child: Container(
+                                          height: 45,
+                                          width: 3,
+                                          decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                        ),
+                                        alignment: Alignment(0, -0.25),
+                                      ),
+                                    ),
+                                    // Dot
+                                    Container(
+                                      child: Container(
+                                        height: 15,
+                                        width: 15,
+                                        decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                      ),
+                                      alignment: Alignment(0, 0),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -189,12 +305,21 @@ class _MainScreenState extends State<MainScreen> {
                                       height: 100,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                            image: AssetImage(
-                                              context
-                                                  .watch<Store>()
-                                                  .storedThemes[index]
-                                                  .backgroundTheme,
-                                            ),
+                                            image: context
+                                                        .watch<Store>()
+                                                        .storedThemes[index]
+                                                        .backgroundTheme ==
+                                                    ''
+                                                ? FileImage(File(context
+                                                    .watch<Store>()
+                                                    .storedThemes[index]
+                                                    .imageFile))
+                                                : AssetImage(
+                                                    context
+                                                        .watch<Store>()
+                                                        .storedThemes[index]
+                                                        .backgroundTheme,
+                                                  ) as ImageProvider,
                                             fit: BoxFit.cover),
                                         borderRadius:
                                             BorderRadius.circular(20.0),

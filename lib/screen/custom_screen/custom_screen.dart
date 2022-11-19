@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -17,16 +18,6 @@ class CustomizeScreen extends StatefulWidget {
 class _CustomizeScreenState extends State<CustomizeScreen> {
   var _selectedIndex = 0;
   var _currentIndex = -1;
-  final ImagePicker _picker = ImagePicker();
-
-  Future getImage() async {
-    final image =
-        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
-    if (image?.path != null) {
-      Provider.of<StoreTheme>(context, listen: false).selectImage(image!);
-      Provider.of<StoreTheme>(context, listen: false).removeBackground();
-    }
-  }
 
   @override
   void initState() {
@@ -63,6 +54,9 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                       theme.textColor =
                           Provider.of<StoreTheme>(context, listen: false)
                               .textColor;
+                      theme.imageFile =
+                          Provider.of<StoreTheme>(context, listen: false)
+                              .imageFile;
                       Provider.of<Store>(context, listen: false)
                           .getTheme(theme);
                       Navigator.pop(context);
@@ -91,15 +85,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
             ] else if (_currentIndex == 1) ...[
               Clock()
             ] else if (_currentIndex == 2) ...[
-              Align(
-                alignment: Alignment(0.9, 0.6),
-                child: FloatingActionButton(
-                  onPressed: () {
-                    getImage();
-                  },
-                  child: Icon(Icons.wallpaper),
-                ),
-              ),
+              GetGalleryImage(),
               Background()
             ] else if (_currentIndex == 3) ...[
               ThemeColor()
@@ -147,6 +133,85 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
             });
           },
         ),
+      ),
+    );
+  }
+}
+
+class GetGalleryImage extends StatelessWidget {
+  GetGalleryImage({Key? key}) : super(key: key);
+
+  final ImagePicker _picker = ImagePicker();
+  String pickedFile = '';
+
+  @override
+  Widget build(BuildContext context) {
+    Future<void> _cropImage() async {
+      print(pickedFile);
+      if (pickedFile != '') {
+        final croppedFile = await ImageCropper().cropImage(
+          sourcePath: pickedFile,
+          aspectRatio: CropAspectRatio(ratioX: 9, ratioY: 16),
+          compressFormat: ImageCompressFormat.jpg,
+          compressQuality: 100,
+          uiSettings: [
+            AndroidUiSettings(
+                toolbarTitle: 'Cropper',
+                toolbarColor: Colors.deepOrange,
+                toolbarWidgetColor: Colors.white,
+                initAspectRatio: CropAspectRatioPreset.ratio9x16,
+                lockAspectRatio: false),
+            IOSUiSettings(
+              title: 'Cropper',
+            ),
+            WebUiSettings(
+              context: context,
+              presentStyle: CropperPresentStyle.dialog,
+              boundary: const CroppieBoundary(
+                width: 520,
+                height: 520,
+              ),
+              viewPort: const CroppieViewPort(
+                  width: 480, height: 480, type: 'circle'),
+              enableExif: true,
+              enableZoom: true,
+              showZoomer: true,
+            ),
+          ],
+        );
+        if (croppedFile != null) {
+          if (Provider.of<Store>(context, listen: false).index == -1) {
+            Provider.of<StoreTheme>(context, listen: false)
+                .selectImage(croppedFile);
+            Provider.of<StoreTheme>(context, listen: false).removeBackground();
+          } else {
+            Provider.of<Store>(context, listen: false)
+                .storedThemes[Provider.of<Store>(context, listen: false).index]
+                .selectImage(croppedFile);
+            Provider.of<Store>(context, listen: false)
+                .storedThemes[Provider.of<Store>(context, listen: false).index]
+                .removeBackground();
+          }
+        }
+      }
+    }
+
+    Future _getImage() async {
+      await _picker
+          .pickImage(source: ImageSource.gallery, imageQuality: 100)
+          .then((value) {
+        pickedFile = value!.path;
+        _cropImage();
+      });
+    }
+
+    return Align(
+      alignment: Alignment(0.9, 0.6),
+      child: FloatingActionButton(
+        onPressed: () {
+          _getImage();
+        },
+        child: Icon(Icons.wallpaper),
       ),
     );
   }

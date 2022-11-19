@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -37,6 +38,7 @@ class Store extends ChangeNotifier {
         temp2.country = token[2].trim();
         temp2.textColor = Color(int.parse(token[3].substring(7, 17)));
         temp2.clockColor = Color(int.parse(token[4].substring(7, 17)));
+        temp2.imageFile = token[5].trim();
         storedThemes.add(temp2);
       }
     }
@@ -111,7 +113,7 @@ class Store extends ChangeNotifier {
     });
   }
 
-  void getCountryList() async {
+  getCountryList() async {
     Response response =
         await get(Uri.parse('http://worldtimeapi.org/api/timezone'));
     var data = jsonDecode(response.body);
@@ -153,7 +155,7 @@ class StoreTheme extends ChangeNotifier {
   String country = 'Seoul';
   Color textColor = Colors.white;
   Color clockColor = Colors.white;
-  var imageFile;
+  String imageFile = '';
 
   @override
   String toString() {
@@ -161,12 +163,13 @@ class StoreTheme extends ChangeNotifier {
         '$backgroundTheme, '
         '$country, '
         '$textColor, '
-        '$clockColor, ');
+        '$clockColor, '
+        '$imageFile, ');
   }
 
-  void selectImage(XFile image) {
-    imageFile = image;
-    print(imageFile.path);
+  void selectImage(CroppedFile image) {
+    imageFile = image.path;
+    print(imageFile);
     notifyListeners();
   }
 
@@ -201,6 +204,7 @@ class StoreTheme extends ChangeNotifier {
     country = 'Seoul';
     textColor = Colors.white;
     clockColor = Colors.white;
+    imageFile = '';
     notifyListeners();
   }
 }
