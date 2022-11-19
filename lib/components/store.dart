@@ -7,19 +7,11 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Store extends ChangeNotifier {
-  double secondsAngle = 0;
-  double minutesAngle = 0;
-  double hoursAngle = 0;
-  String dateTime = '';
-  String hourOffset = '';
-  String minuteOffset = '';
   String countryParsed = 'Seoul';
   String country = 'Asia/Seoul';
   int index = 0;
 
   Map countryDict = {};
-  var local;
-  late Timer timer;
   final List<String> countryListParsed = List.empty(growable: true);
   final List<StoreTheme> storedThemes = List.empty(growable: true);
   final List<String> localData = List.empty(growable: true);
@@ -27,6 +19,7 @@ class Store extends ChangeNotifier {
   getData() async {
     var storage = await SharedPreferences.getInstance();
     var temp = storage.getStringList('themeData');
+    int count = 0;
     print(temp);
     if (temp != null) {
       for (var element in temp) {
@@ -38,14 +31,13 @@ class Store extends ChangeNotifier {
         temp2.textColor = Color(int.parse(token[3].substring(7, 17)));
         temp2.clockColor = Color(int.parse(token[4].substring(7, 17)));
         temp2.imageFile = token[5].trim();
+        temp2.hourOffset = token[6].trim();
+        temp2.minuteOffset = token[7].trim();
         storedThemes.add(temp2);
+        storedThemes[count++].setTime();
       }
-      setCountry(storedThemes[0].country);
-      getTime(country);
-    } else {
-      print('뭐임');
-      getTime('Asia/Seoul');
     }
+    notifyListeners();
   }
 
   saveData() async {
@@ -57,11 +49,13 @@ class Store extends ChangeNotifier {
     }
     storage.setStringList('themeData', localData);
     localData.clear();
+    notifyListeners();
   }
 
   removeData() async {
     var storage = await SharedPreferences.getInstance();
     storage.remove('themeData');
+    notifyListeners();
   }
 
   void reOrder(oldIndex, newIndex) {
@@ -72,6 +66,7 @@ class Store extends ChangeNotifier {
 
   void setIndex(idx) {
     index = idx;
+    print(index);
     notifyListeners();
   }
 
@@ -89,52 +84,6 @@ class Store extends ChangeNotifier {
   void deleteAll() {
     storedThemes.clear();
     notifyListeners();
-  }
-
-  Future<void> getTime(country) async {
-    Response response =
-        await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
-    Map data = jsonDecode(response.body);
-    hourOffset = data['utc_offset'].substring(1, 3);
-    minuteOffset = data['utc_offset'].substring(4, 6);
-    var now = DateTime.now();
-    local = now.timeZoneOffset.toString().split(':');
-    notifyListeners();
-  }
-
-  Future<void> getMainTime(country) async {
-    Response response =
-        await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
-    Map data = jsonDecode(response.body);
-    hourOffset = data['utc_offset'].substring(1, 3);
-    minuteOffset = data['utc_offset'].substring(4, 6);
-    var now = DateTime.now();
-    local = now.timeZoneOffset.toString().split(':');
-  }
-
-  void setMainCountry(text) {
-    if (countryDict.isNotEmpty) {
-      country = countryDict[text] +
-          text; //선택된 나라의 시간대를 가져오기 위해 string을 api format에 맞게 바꿨습니다
-      countryParsed = text; //"지역" 정보만 추출
-    }
-  }
-
-  void setTime() {
-    timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      var now = DateTime.now();
-      var local = now.timeZoneOffset.toString().split(':');
-      now = now.add(Duration(
-          hours: int.parse(hourOffset) - int.parse(local[0]),
-          minutes: int.parse(minuteOffset) - int.parse(local[1])));
-      dateTime =
-          '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
-      print(dateTime);
-      secondsAngle = (pi / 30) * now.second;
-      minutesAngle = (pi / 30) * now.minute;
-      hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
-      notifyListeners();
-    });
   }
 
   Future<void> getCountryList() async {
@@ -171,6 +120,14 @@ class Store extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void setMainCountry(text) {
+    if (countryDict.isNotEmpty) {
+      country = countryDict[text] +
+          text; //선택된 나라의 시간대를 가져오기 위해 string을 api format에 맞게 바꿨습니다
+      countryParsed = text; //"지역" 정보만 추출
+    }
+  }
 }
 
 class StoreTheme extends ChangeNotifier {
@@ -179,7 +136,15 @@ class StoreTheme extends ChangeNotifier {
   String country = 'Seoul';
   Color textColor = Colors.white;
   Color clockColor = Colors.white;
+  double secondsAngle = 0;
+  double minutesAngle = 0;
+  double hoursAngle = 0;
+  String dateTime = '';
+  String hourOffset = '';
+  String minuteOffset = '';
   String imageFile = '';
+  var local;
+  late Timer timer;
 
   @override
   String toString() {
@@ -188,7 +153,48 @@ class StoreTheme extends ChangeNotifier {
         '$country, '
         '$textColor, '
         '$clockColor, '
-        '$imageFile, ');
+        '$imageFile, '
+        '$hourOffset, '
+        '$minuteOffset, ');
+  }
+
+  Future<void> getTime(country) async {
+    Response response =
+        await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
+    Map data = jsonDecode(response.body);
+    hourOffset = data['utc_offset'].substring(1, 3);
+    minuteOffset = data['utc_offset'].substring(4, 6);
+    var now = DateTime.now();
+    local = now.timeZoneOffset.toString().split(':');
+    notifyListeners();
+  }
+
+  Future<void> getMainTime(country) async {
+    await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'))
+        .then((value) {
+      Map data = jsonDecode(value.body);
+      hourOffset = data['utc_offset'].substring(1, 3);
+      minuteOffset = data['utc_offset'].substring(4, 6);
+      var now = DateTime.now();
+      local = now.timeZoneOffset.toString().split(':');
+      setTime();
+    });
+  }
+
+  void setTime() {
+    timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      var now = DateTime.now();
+      var local = now.timeZoneOffset.toString().split(':');
+      now = now.add(Duration(
+          hours: int.parse(hourOffset) - int.parse(local[0]),
+          minutes: int.parse(minuteOffset) - int.parse(local[1])));
+      dateTime =
+          '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
+      secondsAngle = (pi / 30) * now.second;
+      minutesAngle = (pi / 30) * now.minute;
+      hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
+      notifyListeners();
+    });
   }
 
   void selectImage(CroppedFile image) {

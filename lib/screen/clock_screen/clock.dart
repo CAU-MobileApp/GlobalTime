@@ -18,12 +18,20 @@ class _ClockWidgetState extends State<ClockWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.watch<Store>().setTime();
+    Provider.of<Store>(context, listen: true)
+        .storedThemes[Provider.of<Store>(context, listen: true).index]
+        .setTime();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Store pvdStore = Provider.of<Store>(context, listen: false);
+    Store pvdStore = Provider.of<Store>(context, listen: true);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -38,17 +46,15 @@ class _ClockWidgetState extends State<ClockWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        pvdStore.countryParsed,
+                        pvdStore.storedThemes[pvdStore.index].country,
                         style: TextStyle(
                             fontSize: 32,
                             fontFamily: 'main2',
-                            color: context
-                                .watch<Store>()
-                                .storedThemes[pvdStore.index]
-                                .textColor),
+                            color: pvdStore
+                                .storedThemes[pvdStore.index].textColor),
                       ),
                       Text(
-                        pvdStore.dateTime,
+                        pvdStore.storedThemes[pvdStore.index].dateTime,
                         style: TextStyle(
                             fontSize: 32,
                             fontFamily: 'main2',
@@ -58,7 +64,7 @@ class _ClockWidgetState extends State<ClockWidget> {
                     ],
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 24,
             ),
             Container(
@@ -76,8 +82,9 @@ class _ClockWidgetState extends State<ClockWidget> {
                   ),
                   // Seconds
                   Transform.rotate(
-                    angle: pvdStore.secondsAngle,
+                    angle: pvdStore.storedThemes[pvdStore.index].secondsAngle,
                     child: Container(
+                      alignment: Alignment(0, -0.45),
                       child: Container(
                         height: 120,
                         width: 2,
@@ -85,13 +92,12 @@ class _ClockWidgetState extends State<ClockWidget> {
                             color: Colors.black45,
                             borderRadius: BorderRadius.circular(10)),
                       ),
-                      alignment: Alignment(0, -0.45),
                     ),
-                  ),
-                  // Minutes
+                  ), // Minutes
                   Transform.rotate(
-                    angle: context.watch<Store>().minutesAngle,
+                    angle: pvdStore.storedThemes[pvdStore.index].minutesAngle,
                     child: Container(
+                      alignment: Alignment(0, -0.4),
                       child: Container(
                         height: 85,
                         width: 4,
@@ -99,13 +105,13 @@ class _ClockWidgetState extends State<ClockWidget> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
                       ),
-                      alignment: Alignment(0, -0.4),
                     ),
                   ),
                   // Hours
                   Transform.rotate(
-                    angle: context.watch<Store>().hoursAngle,
+                    angle: pvdStore.storedThemes[pvdStore.index].hoursAngle,
                     child: Container(
+                      alignment: const Alignment(0, -0.25),
                       child: Container(
                         height: 65,
                         width: 3,
@@ -113,11 +119,11 @@ class _ClockWidgetState extends State<ClockWidget> {
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(10)),
                       ),
-                      alignment: Alignment(0, -0.25),
                     ),
                   ),
                   // Dot
                   Container(
+                    alignment: const Alignment(0, 0),
                     child: Container(
                       height: 15,
                       width: 15,
@@ -125,7 +131,6 @@ class _ClockWidgetState extends State<ClockWidget> {
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(50)),
                     ),
-                    alignment: Alignment(0, 0),
                   ),
                 ],
               ),

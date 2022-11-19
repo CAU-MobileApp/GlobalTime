@@ -11,20 +11,24 @@ class SampleClockWidget extends StatefulWidget {
 
 class _SampleClockWidgetState extends State<SampleClockWidget> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    context.watch<Store>().index == -1
+        ? context.watch<StoreTheme>().setTime()
+        : context
+            .watch<Store>()
+            .storedThemes[context.watch<Store>().index]
+            .setTime();
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.watch<Store>().setTime();
+  void dispose() {
+    super.dispose();
   }
 
   Widget build(BuildContext context) {
-    Store pvdStore = Provider.of<Store>(context, listen: false);
-    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
+    Store pvdStore = Provider.of<Store>(context, listen: true);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -39,7 +43,9 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      pvdStore.countryParsed,
+                      pvdStore.index == -1
+                          ? pvdStoreTheme.country
+                          : pvdStore.storedThemes[pvdStore.index].country,
                       style: pvdStore.index == -1
                           ? TextStyle(
                               fontSize: 32,
@@ -52,7 +58,9 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                                   .storedThemes[pvdStore.index].textColor),
                     ),
                     Text(
-                      pvdStore.dateTime,
+                      pvdStore.index == -1
+                          ? pvdStoreTheme.dateTime
+                          : pvdStore.storedThemes[pvdStore.index].dateTime,
                       style: pvdStore.index == -1
                           ? TextStyle(
                               fontSize: 32,
@@ -92,7 +100,9 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                           ),
                     // Seconds
                     Transform.rotate(
-                      angle: pvdStore.secondsAngle,
+                      angle: pvdStore.index == -1
+                          ? pvdStoreTheme.secondsAngle
+                          : pvdStore.storedThemes[pvdStore.index].secondsAngle,
                       child: Container(
                         child: Container(
                           height: 120,
@@ -106,7 +116,9 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                     ),
                     // Minutes
                     Transform.rotate(
-                      angle: pvdStore.minutesAngle,
+                      angle: pvdStore.index == -1
+                          ? pvdStoreTheme.minutesAngle
+                          : pvdStore.storedThemes[pvdStore.index].minutesAngle,
                       child: Container(
                         child: Container(
                           height: 85,
@@ -120,7 +132,9 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                     ),
                     // Hours
                     Transform.rotate(
-                      angle: pvdStore.hoursAngle,
+                      angle: pvdStore.index == -1
+                          ? pvdStoreTheme.hoursAngle
+                          : pvdStore.storedThemes[pvdStore.index].hoursAngle,
                       child: Container(
                         child: Container(
                           height: 65,
