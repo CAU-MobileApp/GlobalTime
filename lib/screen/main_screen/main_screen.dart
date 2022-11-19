@@ -3,6 +3,9 @@ import 'package:world_time/components/store.dart';
 import 'package:world_time/screen/clock_screen/clock_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/screen/custom_screen/custom_screen.dart';
+import 'dart:io';
+
+import 'package:world_time/screen/main_screen/main_clock.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.title});
@@ -12,313 +15,254 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  bool check = true;
 
   @override
   void initState() {
-    Provider.of<Store>(context, listen: false).getData();
+    Provider.of<Store>(context, listen: false).getCountryList().then((value) =>
+        Provider.of<Store>(context, listen: false)
+            .getData()); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
     super.initState();
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty &&
+        check == false) {
+      check = true;
+    } else if (Provider.of<Store>(context, listen: false)
+            .storedThemes
+            .isEmpty &&
+        check == true) {
+      check = false;
+      Provider.of<StoreTheme>(context, listen: true).getMainTime('Asia/Seoul');
+    }
+    if (check == true) {
+      Provider.of<Store>(context, listen: true).storedThemes[0].setTime();
+    } else {
+      Provider.of<StoreTheme>(context, listen: true).setTime();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: true);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     return Scaffold(
-      body:
-      Container(
+      body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter
-          ),
+              colors: [Colors.white, Colors.grey],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter),
         ),
         // color: Colors.tealAccent,
-        child: Column(
-            children:[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(40, 55, 20, 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(40, 55, 20, 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'My\nClock',
+                  style: TextStyle(fontFamily: 'main', fontSize: 40),
+                ),
+                Column(
                   children: [
-                    const Text('My\nClock',
-                      style: TextStyle(
-                          fontFamily: 'main',
-                          fontSize: 40),
+                    FloatingActionButton(
+                      onPressed: () async {
+                        // countryDict이 비어 있음 --> api로 부터 세계 나라들 getCountry 연산 안 된 상태
+                        // --> await getCountryList 해서 리스트 로드 이후 시계 페이지로 가면 바로 볼 수 있게끔
+                        // --> 이러면 첫 실행 시도에 한해서 연산 속도 때문에 시계 페이지로 넘어갈 때 시간이 좀 걸리는 단점이 있음
+                        if (Provider.of<Store>(context, listen: false)
+                            .countryDict
+                            .isEmpty) {
+                          print(Provider.of<Store>(context, listen: false)
+                              .countryDict);
+                          await Provider.of<Store>(context, listen: false)
+                              .getCountryList();
+                        }
+                        pvdStore.setIndex(-1);
+                        pvdStore.setCountry('Seoul');
+                        pvdStoreTheme.getTime('Asia/Seoul');
+                        Navigator.push(context, MaterialPageRoute(builder: (_) {
+                          return CustomizeScreen();
+                        }));
+                      },
+                      backgroundColor: Color(0xFF222324),
+                      // backgroundColor: Colors.grey,
+                      elevation: 3,
+                      child: const Icon(Icons.add),
                     ),
-                    Column(
-                      children: [
-                        FloatingActionButton(
-                          onPressed: () async{
-                            // countryDict이 비어 있음 --> api로 부터 세계 나라들 getCountry 연산 안 된 상태
-                            // --> await getCountryList 해서 리스트 로드 이후 시계 페이지로 가면 바로 볼 수 있게끔
-                            // --> 이러면 첫 실행 시도에 한해서 연산 속도 때문에 시계 페이지로 넘어갈 때 시간이 좀 걸리는 단점이 있음
-                            if (Provider.of<Store>(context, listen: false).countryDict.isEmpty){
-                              print(Provider.of<Store>(context, listen: false).countryDict);
-                              await Provider.of<Store>(context, listen: false)
-                                  .getCountryList();
-                            }
-
-                            Provider.of<Store>(context, listen: false).setIndex(-1);
-                            Provider.of<Store>(context, listen: false)
-                                .setCountry('Seoul');
-                            Provider.of<Store>(context, listen: false)
-                                .getTime('Asia/Seoul');
-                            Navigator.push(context, MaterialPageRoute(builder: (_) {
-                              return CustomizeScreen();
-                            }));
-                          },
-                          backgroundColor: Color(0xFF222324),
-                          // backgroundColor: Colors.grey,
-                          elevation: 3,
-                          child: const Icon(Icons.add),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
-                          child: Row(
-                            children: [
-                              FloatingActionButton.small(
-                                  heroTag: "clearButton",
-                                  backgroundColor: Color(0xFF222324),
-                                  onPressed: () {
-                                    Provider.of<Store>(context, listen: false).removeData();
-                                    Provider.of<Store>(context, listen: false).deleteAll();
-                                  },
-                                  child: Icon(Icons.refresh),
-                              ),
-                              FloatingActionButton.small(
-                                  heroTag: "saveButton",
-                                  backgroundColor: Color(0xFF222324),
-                                  onPressed: () {
-                                    Provider.of<Store>(context, listen: false).removeData();
-                                    Future.delayed(Duration(milliseconds: 10)).then((value) =>
-                                        Provider.of<Store>(context, listen: false).saveData());
-                                  },
-                                  child: Icon(Icons.save),
-                              ),
-                            ],
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
+                      child: Row(
+                        children: [
+                          FloatingActionButton.small(
+                            heroTag: "clearButton",
+                            backgroundColor: Color(0xFF222324),
+                            onPressed: () {
+                              pvdStore.removeData();
+                              pvdStore.deleteAll();
+                            },
+                            child: Icon(Icons.refresh),
                           ),
-                        ),
-                      ],
+                          FloatingActionButton.small(
+                            heroTag: "saveButton",
+                            backgroundColor: Color(0xFF222324),
+                            onPressed: () {
+                              pvdStore.removeData();
+                              pvdStore.saveData();
+                            },
+                            child: Icon(Icons.save),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
+                child: Column(
+                  children: [
+                    const MainClock(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ReorderableListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: pvdStore.storedThemes.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Dismissible(
+                          key: ValueKey(pvdStore.storedThemes[index]),
+                          onDismissed: (direction) {
+                            pvdStore.deleteTheme(index);
+                          },
+                          child: GestureDetector(
+                            onTap: () {
+                              pvdStore.setIndex(index);
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) {
+                                return const DetailScreen();
+                              }));
+                            },
+                            child: Hero(
+                                tag: "$index",
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                  child: Container(
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: pvdStore.storedThemes[index]
+                                                        .backgroundTheme ==
+                                                    ''
+                                                ? FileImage(File(pvdStore
+                                                    .storedThemes[index]
+                                                    .imageFile))
+                                                : AssetImage(
+                                                    pvdStore.storedThemes[index]
+                                                        .backgroundTheme,
+                                                  ) as ImageProvider,
+                                            fit: BoxFit.cover),
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.5),
+                                            spreadRadius: 5,
+                                            blurRadius: 7,
+                                            offset: const Offset(0,
+                                                3), // changes position of shadow
+                                          ),
+                                        ],
+                                      ),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0)),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 0, vertical: 0),
+                                        color: Colors.black26,
+                                        child: Center(
+                                          child: ListTile(
+                                            /**Text 안에 list[i].country로 수정*/
+                                            title: Text(
+                                              pvdStore
+                                                  .storedThemes[index].country,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 24,
+                                                fontFamily: 'main2',
+                                              ),
+                                            ),
+                                            trailing: IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: Colors.white,
+                                                size: 30,
+                                              ),
+                                              /**onPressed 누르면, Customize Screen으로 이동*/
+                                              onPressed: () async {
+                                                //CountryList 완전히 load 된 후 실행하기 위함
+                                                if (pvdStore
+                                                    .countryDict.isEmpty) {
+                                                  await pvdStore
+                                                      .getCountryList();
+                                                }
+                                                //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
+                                                pvdStore.setIndex(index);
+                                                pvdStore.setCountry(pvdStore
+                                                    .storedThemes[index]
+                                                    .country); //새로 선택된 지역 정보로 text를 갱신
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) {
+                                                  return const CustomizeScreen();
+                                                }));
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                )),
+                          ),
+                        );
+                      },
+                      onReorder: (int oldIndex, int newIndex) {
+                        print(oldIndex);
+                        print(newIndex);
+                        if (oldIndex < newIndex) {
+                          newIndex -= 1;
+                        }
+                        if (newIndex == 0) {
+                          pvdStore.setCountry(
+                              pvdStore.storedThemes[oldIndex].country);
+                        }
+                        Provider.of<Store>(context, listen: false)
+                            .reOrder(oldIndex, newIndex);
+                      },
                     ),
                   ],
                 ),
               ),
-              Expanded(
-                child:SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 300,
-                          height: 300,
-                          // decoration: BoxDecoration(
-                          //   image: DecorationImage(
-                          //       image: AssetImage(
-                          //         context
-                          //             .watch<Store>()
-                          //             .storedThemes[0]
-                          //             .backgroundTheme,
-                          //       ),
-                          //       fit: BoxFit.cover
-                          //   ),
-                          //   borderRadius: BorderRadius.circular(30),
-                          //     boxShadow: [
-                          //       BoxShadow(
-                          //         color: Colors.grey.withOpacity(0.5),
-                          //         spreadRadius: 5,
-                          //         blurRadius: 7,
-                          //         offset: Offset(0, 3),
-                          //       )
-                          //     ]
-                          //
-                          // ),
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child:
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Chicago',
-                                  style: TextStyle(
-                                    fontFamily: 'main2',
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        ReorderableListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: context.watch<Store>().storedThemes.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Dismissible(
-                                key: ValueKey(context.watch<Store>().storedThemes[index]),
-                                onDismissed: (direction) {
-                                  Provider.of<Store>(context, listen: false).deleteTheme(index);
-                                  Future.delayed(Duration(milliseconds: 10)).then((value) =>
-                                      Provider.of<Store>(context, listen: false).saveData());
-                                },
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Provider.of<Store>(context, listen: false).setIndex(index);
-                                    Provider.of<Store>(context, listen: false).setCountry(
-                                        Provider.of<Store>(context, listen: false)
-                                            .storedThemes[index]
-                                            .country); //새로 선택된 지역 정보로 text를 갱신
-                                    Provider.of<Store>(context, listen: false).getTime(
-                                        Provider.of<Store>(context, listen: false).country);
-
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) {
-                                      return const DetailScreen();
-                                    }));
-                                  },
-                                  child: Hero(
-                                      tag: "$index",
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                        child: Container(
-                                            height: 100,
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: AssetImage(
-                                                  context
-                                                      .watch<Store>()
-                                                      .storedThemes[index]
-                                                      .backgroundTheme,
-                                                ),
-                                                fit: BoxFit.cover
-                                              ),
-                                              borderRadius: BorderRadius.circular(20.0),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey.withOpacity(0.5),
-                                                  spreadRadius: 5,
-                                                  blurRadius: 7,
-                                                  offset: Offset(0, 3), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: Card(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20.0)
-                                              ),
-                                              margin:
-                                              EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                                              color: Colors.black26,
-                                              child: Center(
-                                                child: ListTile(
-                                                  /**Text 안에 list[i].country로 수정*/
-                                                  title: Text(
-                                                    context
-                                                        .watch<Store>()
-                                                        .storedThemes[index]
-                                                        .country,
-                                                    style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 24,
-                                                      fontFamily: 'main2',
-                                                    ),
-                                                  ),
-                                                  trailing: IconButton(
-                                                    icon: const Icon(
-                                                      Icons.edit,
-                                                      color: Colors.white,
-                                                      size: 30,
-                                                    ),
-                                                    /**onPressed 누르면, Customize Screen으로 이동*/
-                                                    onPressed: () async{
-
-                                                      //CountryList 완전히 load 된 후 실행하기 위함
-                                                      if (Provider.of<Store>(context, listen: false).countryDict.isEmpty){
-                                                        await Provider.of<Store>(context, listen: false)
-                                                            .getCountryList();
-                                                      }
-
-                                                      //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
-                                                      Provider.of<Store>(context, listen: false)
-                                                          .setIndex(index);
-                                                      Provider.of<Store>(context, listen: false)
-                                                          .setCountry(Provider.of<Store>(context,
-                                                          listen: false)
-                                                          .storedThemes[index]
-                                                          .country); //새로 선택된 지역 정보로 text를 갱신
-                                                      Provider.of<Store>(context, listen: false)
-                                                          .getTime(Provider.of<Store>(context,
-                                                          listen: false)
-                                                          .country);
-                                                      Navigator.push(context,
-                                                          MaterialPageRoute(builder: (_) {
-                                                            return CustomizeScreen();
-                                                          }));
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            )),
-                                      )),
-                                ),
-                              );
-                            },
-                            onReorder: (int oldIndex, int newIndex) {
-                              if (oldIndex < newIndex) {
-                                newIndex -= 1;
-                              }
-                              Provider.of<Store>(context, listen: false)
-                                  .reOrder(oldIndex, newIndex);
-                            },
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // Stack(children: [
-              //   Align(
-              //     alignment: Alignment.bottomLeft,
-              //     child: Padding(
-              //       padding: const EdgeInsets.all(16.0),
-              //       child: FloatingActionButton(
-              //         heroTag: "clearButton",
-              //         backgroundColor: Color(0xFF222324),
-              //         onPressed: () {
-              //           Provider.of<Store>(context, listen: false).removeData();
-              //           Provider.of<Store>(context, listen: false).deleteAll();
-              //         },
-              //         child: Icon(Icons.refresh),
-              //       ),
-              //     ),
-              //   ),
-              //   Align(
-              //     alignment: Alignment.bottomRight,
-              //     child: Padding(
-              //       padding: const EdgeInsets.all(16.0),
-              //       child: FloatingActionButton(
-              //         heroTag: "saveButton",
-              //         backgroundColor: Color(0xFF222324),
-              //         onPressed: () {
-              //           Provider.of<Store>(context, listen: false).removeData();
-              //           Future.delayed(Duration(milliseconds: 10)).then((value) =>
-              //               Provider.of<Store>(context, listen: false).saveData());
-              //         },
-              //         child: Icon(Icons.save),
-              //       ),
-              //     ),
-              //   ),
-              // ]),
-            ]
-        ),
+            ),
+          ),
+        ]),
       ),
     );
   }
