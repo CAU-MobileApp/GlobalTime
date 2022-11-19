@@ -95,7 +95,6 @@ class Store extends ChangeNotifier {
     Response response =
         await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
     Map data = jsonDecode(response.body);
-    dateTime = data['datetime'].substring(0, 10);
     hourOffset = data['utc_offset'].substring(1, 3);
     minuteOffset = data['utc_offset'].substring(4, 6);
     var now = DateTime.now();
@@ -107,7 +106,6 @@ class Store extends ChangeNotifier {
     Response response =
         await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
     Map data = jsonDecode(response.body);
-    dateTime = data['datetime'].substring(0, 10);
     hourOffset = data['utc_offset'].substring(1, 3);
     minuteOffset = data['utc_offset'].substring(4, 6);
     var now = DateTime.now();
@@ -129,6 +127,9 @@ class Store extends ChangeNotifier {
       now = now.add(Duration(
           hours: int.parse(hourOffset) - int.parse(local[0]),
           minutes: int.parse(minuteOffset) - int.parse(local[1])));
+      dateTime =
+          '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
+      print(dateTime);
       secondsAngle = (pi / 30) * now.second;
       minutesAngle = (pi / 30) * now.minute;
       hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
