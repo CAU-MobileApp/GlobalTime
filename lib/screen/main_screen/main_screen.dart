@@ -22,11 +22,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.watch<Store>().setTime();
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -115,33 +110,13 @@ class _MainScreenState extends State<MainScreen> {
                     Container(
                       width: 300,
                       height: 300,
-                      // decoration: BoxDecoration(
-                      //   image: DecorationImage(
-                      //       image: AssetImage(
-                      //         context
-                      //             .watch<Store>()
-                      //             .storedThemes[0]
-                      //             .backgroundTheme,
-                      //       ),
-                      //       fit: BoxFit.cover
-                      //   ),
-                      //   borderRadius: BorderRadius.circular(30),
-                      //     boxShadow: [
-                      //       BoxShadow(
-                      //         color: Colors.grey.withOpacity(0.5),
-                      //         spreadRadius: 5,
-                      //         blurRadius: 7,
-                      //         offset: Offset(0, 3),
-                      //       )
-                      //     ]
-                      //
-                      // ),
                       decoration: BoxDecoration(
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(30),
                         image: DecorationImage(
                             image: context.watch<Store>().storedThemes.isEmpty
-                                ? AssetImage('./background0.jpg')
+                                ? AssetImage(
+                                    'assets/background/background0.jpg')
                                 : (context
                                             .watch<Store>()
                                             .storedThemes[0]
@@ -160,105 +135,7 @@ class _MainScreenState extends State<MainScreen> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
                         child: Stack(
-                          children: [
-                            Text(
-                              context.watch<Store>().storedThemes.isEmpty
-                                  ? 'Seoul'
-                                  : context
-                                      .watch<Store>()
-                                      .storedThemes[0]
-                                      .country,
-                              style: TextStyle(
-                                fontFamily: 'main2',
-                                fontSize: 20,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Center(
-                              child: Container(
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                    color: Colors.white30,
-                                    border: Border.all(
-                                        color: Colors.black45, width: 10),
-                                    borderRadius: BorderRadius.circular(150)),
-                                child: Stack(
-                                  children: [
-                                    Image.asset(
-                                      context
-                                          .watch<Store>()
-                                          .storedThemes[0]
-                                          .clockTheme,
-                                      color: context
-                                          .watch<Store>()
-                                          .storedThemes[0]
-                                          .clockColor,
-                                    ),
-                                    // Seconds
-                                    Transform.rotate(
-                                      angle:
-                                          context.watch<Store>().secondsAngle,
-                                      child: Container(
-                                        child: Container(
-                                          height: 100,
-                                          width: 2,
-                                          decoration: BoxDecoration(
-                                              color: Colors.black45,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                        ),
-                                        alignment: Alignment(0, -0.45),
-                                      ),
-                                    ),
-                                    // Minutes
-                                    Transform.rotate(
-                                      angle:
-                                          context.watch<Store>().minutesAngle,
-                                      child: Container(
-                                        child: Container(
-                                          height: 65,
-                                          width: 4,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                        ),
-                                        alignment: Alignment(0, -0.4),
-                                      ),
-                                    ),
-                                    // Hours
-                                    Transform.rotate(
-                                      angle: context.watch<Store>().hoursAngle,
-                                      child: Container(
-                                        child: Container(
-                                          height: 45,
-                                          width: 3,
-                                          decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                        ),
-                                        alignment: Alignment(0, -0.25),
-                                      ),
-                                    ),
-                                    // Dot
-                                    Container(
-                                      child: Container(
-                                        height: 15,
-                                        width: 15,
-                                        decoration: BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius:
-                                                BorderRadius.circular(50)),
-                                      ),
-                                      alignment: Alignment(0, 0),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
+                          children: [],
                         ),
                       ),
                     ),
@@ -406,39 +283,6 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
           ),
-          // Stack(children: [
-          //   Align(
-          //     alignment: Alignment.bottomLeft,
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(16.0),
-          //       child: FloatingActionButton(
-          //         heroTag: "clearButton",
-          //         backgroundColor: Color(0xFF222324),
-          //         onPressed: () {
-          //           Provider.of<Store>(context, listen: false).removeData();
-          //           Provider.of<Store>(context, listen: false).deleteAll();
-          //         },
-          //         child: Icon(Icons.refresh),
-          //       ),
-          //     ),
-          //   ),
-          //   Align(
-          //     alignment: Alignment.bottomRight,
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(16.0),
-          //       child: FloatingActionButton(
-          //         heroTag: "saveButton",
-          //         backgroundColor: Color(0xFF222324),
-          //         onPressed: () {
-          //           Provider.of<Store>(context, listen: false).removeData();
-          //           Future.delayed(Duration(milliseconds: 10)).then((value) =>
-          //               Provider.of<Store>(context, listen: false).saveData());
-          //         },
-          //         child: Icon(Icons.save),
-          //       ),
-          //     ),
-          //   ),
-          // ]),
         ]),
       ),
     );
