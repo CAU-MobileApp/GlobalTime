@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:searchfield/searchfield.dart';
 import 'package:world_time/components/store.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:world_time/screen/custom_screen/sample_screen.dart';
@@ -19,7 +21,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
 
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 0)).then((value) =>
+    Future.delayed(const Duration(seconds: 0)).then((value) =>
         Provider.of<StoreTheme>(context, listen: false).clearTheme());
     print(Provider.of<StoreTheme>(context, listen: false).country);
     super.initState();
@@ -72,13 +74,13 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
       body: Container(
         child: Stack(
           children: [
-            SampleScreen(),
+            const SampleScreen(),
             if (_currentIndex == 0) ...[
-              Country()
+              const Country()
             ] else if (_currentIndex == 1) ...[
-              Clock()
+              const Clock()
             ] else if (_currentIndex == 2) ...[
-              Background()
+              const Background()
             ] else if (_currentIndex == 3) ...[
               ThemeColor()
             ]
@@ -89,7 +91,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
         height: 70,
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Color(0xffedeff2),
+          backgroundColor: const Color(0xffedeff2),
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.public),
@@ -144,11 +146,11 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
     return DefaultTabController(
       length: 2,
       child: Align(
-          alignment: Alignment(0.0, 1),
+          alignment: const Alignment(0.0, 1),
           child: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.25,
-              decoration: BoxDecoration(color: Colors.white),
+              decoration: const BoxDecoration(color: Colors.white),
               child: Row(
                 children: [
                   Container(
@@ -193,7 +195,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                   ),
                   Flexible(
                     child: TabBarView(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         SlidePicker(
                           pickerColor: context.watch<Store>().index == -1
@@ -258,11 +260,11 @@ class Background extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment(0.0, 0.9),
+      alignment: const Alignment(0.0, 0.9),
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.1,
-        decoration: BoxDecoration(color: Color(0xfff0f0f0)),
+        decoration: const BoxDecoration(color: Color(0xfff0f0f0)),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -299,11 +301,11 @@ class Clock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment(0.0, 0.9),
+      alignment: const Alignment(0.0, 0.9),
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.1,
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: const BoxDecoration(color: Colors.white),
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -344,51 +346,152 @@ class Country extends StatefulWidget {
 }
 
 class _CountryState extends State<Country> {
+  final _formKey = GlobalKey<FormState>();
+  final _searchController = TextEditingController();
+  final focus = FocusNode();
+  var _hint = "Search Country";
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    focus.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Align(
-        alignment: const Alignment(0.0, 1),
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.25,
-            decoration: const BoxDecoration(color: Colors.white),
-            child: ListView(
-              scrollDirection: Axis.vertical,
-              children: List.generate(
-                  Provider.of<Store>(context).countryListParsed.length, (i) {
-                return GestureDetector(
-                  key: ValueKey(i),
-                  child: ListTile(
-                    title:
-                    Text(Provider.of<Store>(context).countryListParsed[i]),
-                    onTap: () {
-                      Provider.of<Store>(context, listen: false).setCountry(
-                          Provider.of<Store>(context, listen: false)
-                              .countryListParsed[i]); //새로 선택된 지역 정보로 text를 갱신
-                      Provider.of<Store>(context, listen: false).getTime(
-                          Provider.of<Store>(context, listen: false).country);
-                      Provider.of<Store>(context, listen: false).index == -1
-                          ? Provider.of<StoreTheme>(context, listen: false)
-                          .country =
-                      Provider.of<Store>(context, listen: false)
-                          .countryListParsed[i]
-                          : Provider.of<Store>(context, listen: false)
-                          .storedThemes[
-                      Provider.of<Store>(context, listen: false)
-                          .index]
-                          .country =
-                      Provider.of<Store>(context, listen: false)
-                          .countryListParsed[i]; //갱신된 지역 정보로 시간 또한 업데이트
-                    }, //StoreTheme에 있던 country정보를 Store에서 일괄 관리하는게 나을 것 같아서 이전하였습니다
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
+
+    return Stack(
+      children: [
+        Form(
+          key: _formKey,
+          child: SearchField(     //https://pub.dev/packages/searchfield 패키지 사용
+            suggestions: pvdStore.countryListParsed
+                .map((country) => SearchFieldListItem(country,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(country,
+                      style: const TextStyle(color: Colors.black),
+                    ),
                   ),
-                );
-              }).toList(),
+                )))
+                .toList(),
+            searchInputDecoration: InputDecoration(   //input box 관련 ui
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              border: const OutlineInputBorder(),
             ),
+            suggestionsDecoration: const BoxDecoration(   //검색창 리스트 목록 관련 ui
+              borderRadius: BorderRadius.all(
+                  Radius.circular(16.0)
+              ),
+              color: Colors.white,
+            ),
+            suggestionItemDecoration: const BoxDecoration(  //검색창 리스트 개별 아이템 관련 ui
+
+            ),
+            suggestionState: Suggestion.expand,
+            textInputAction: TextInputAction.done,
+            onSubmit: (value){
+              if (pvdStore.countryListParsed.contains(value) && value.isNotEmpty){  //validity 검사
+                pvdStore.setCountry(value); //새로 선택된 지역 정보로 text를 갱신
+                pvdStore.getTime(pvdStore.country);
+                pvdStore.index == -1
+                    ? pvdStoreTheme.country = value
+                    : pvdStore.storedThemes[pvdStore.index].country = value;
+                _searchController.text = '';
+              }
+              else{
+                _searchController.text = '';
+              }
+            },
+            hint: _hint,
+            focusNode: focus,
+            controller: _searchController,
+            hasOverlay: false,
+            searchStyle: const TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+            ),
+            maxSuggestionsInViewPort: 5,
+            itemHeight: 50,
+            onSuggestionTap: (x) {},
           ),
         ),
-      ),
+        // Padding(
+        //   padding: const EdgeInsets.fromLTRB(0, 12, 12, 0),
+        //   child: Align(
+        //     alignment: Alignment.topRight,
+        //     child: IconButton(
+        //       icon: const Icon(Icons.search),
+        //       onPressed: (){
+        //         if (pvdStore.countryListParsed.contains(_searchController.text) && _searchController.text.isNotEmpty){  //validity 검사
+        //           pvdStore.setCountry(_searchController.text); //새로 선택된 지역 정보로 text를 갱신
+        //           pvdStore.getTime(pvdStore.country);
+        //           pvdStore.index == -1
+        //               ? pvdStoreTheme.country = _searchController.text
+        //               : pvdStore.storedThemes[pvdStore.index].country = _searchController.text;
+        //         }
+        //       },
+        //     ),
+        //   ),
+        // ),
+      ],
     );
+
+    // return Center(
+    //   child: Align(
+    //     alignment: const Alignment(0.0, 1),
+    //     child: SingleChildScrollView(
+    //       child: Container(
+    //         width: MediaQuery.of(context).size.width,
+    //         height: MediaQuery.of(context).size.height * 0.25,
+    //         decoration: const BoxDecoration(color: Colors.white),
+    //         child: ListView(
+    //           scrollDirection: Axis.vertical,
+    //           children: List.generate(
+    //               pvd.countryListParsed.length, (i) {
+    //             return GestureDetector(
+    //               key: ValueKey(i),
+    //               child: ListTile(
+    //                 title:
+    //                 Text(pvd.countryListParsed[i]),
+    //                 onTap: () {
+    //                   setPVD(pvd, i);
+    //                 }, //StoreTheme에 있던 country정보를 Store에서 일괄 관리하는게 나을 것 같아서 이전하였습니다
+    //               ),
+    //             );
+    //           }).toList(),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
+
