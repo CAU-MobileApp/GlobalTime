@@ -9,6 +9,8 @@ class SampleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Stack(
       children: [
         Container(
@@ -16,24 +18,19 @@ class SampleScreen extends StatelessWidget {
           height: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: context.watch<Store>().index == -1
+                image: pvdStore.index == -1
                     ? (context.watch<StoreTheme>().backgroundTheme == ''
-                        ? FileImage(File(context.watch<StoreTheme>().imageFile))
-                        : AssetImage(context
-                            .watch<StoreTheme>()
-                            .backgroundTheme)) as ImageProvider
+                            ? FileImage(File(pvdStoreTheme.imageFile))
+                            : AssetImage(pvdStoreTheme.backgroundTheme))
+                        as ImageProvider
                     : (context
                                 .watch<Store>()
-                                .storedThemes[context.watch<Store>().index]
+                                .storedThemes[pvdStore.index]
                                 .backgroundTheme ==
                             ''
-                        ? FileImage(File(context
-                            .watch<Store>()
-                            .storedThemes[context.watch<Store>().index]
-                            .imageFile))
-                        : AssetImage(context
-                            .watch<Store>()
-                            .storedThemes[context.watch<Store>().index]
+                        ? FileImage(File(
+                            pvdStore.storedThemes[pvdStore.index].imageFile))
+                        : AssetImage(pvdStore.storedThemes[pvdStore.index]
                             .backgroundTheme) as ImageProvider),
                 fit: BoxFit.cover),
           ),

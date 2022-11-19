@@ -23,6 +23,8 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
   }
 
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -37,34 +39,30 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      context.watch<Store>().countryParsed,
-                      style: context.watch<Store>().index == -1
+                      pvdStore.countryParsed,
+                      style: pvdStore.index == -1
                           ? TextStyle(
                               fontSize: 32,
                               fontFamily: 'main2',
-                              color: context.watch<StoreTheme>().textColor)
+                              color: pvdStoreTheme.textColor)
                           : TextStyle(
                               fontSize: 32,
                               fontFamily: 'main2',
-                              color: context
-                                  .watch<Store>()
-                                  .storedThemes[context.watch<Store>().index]
-                                  .textColor),
+                              color: pvdStore
+                                  .storedThemes[pvdStore.index].textColor),
                     ),
                     Text(
-                      context.watch<Store>().dateTime,
-                      style: context.watch<Store>().index == -1
+                      pvdStore.dateTime,
+                      style: pvdStore.index == -1
                           ? TextStyle(
                               fontSize: 32,
                               fontFamily: 'main2',
-                              color: context.watch<StoreTheme>().textColor)
+                              color: pvdStoreTheme.textColor)
                           : TextStyle(
                               fontSize: 32,
                               fontFamily: 'main2',
-                              color: context
-                                  .watch<Store>()
-                                  .storedThemes[context.watch<Store>().index]
-                                  .textColor),
+                              color: pvdStore
+                                  .storedThemes[pvdStore.index].textColor),
                     ),
                   ],
                 ),
@@ -83,23 +81,18 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                   children: [
                     context.watch<Store>().index == -1
                         ? Image.asset(
-                            context.watch<StoreTheme>().clockTheme,
-                            color: context.watch<StoreTheme>().clockColor,
+                            pvdStoreTheme.clockTheme,
+                            color: pvdStoreTheme.clockColor,
                             fit: BoxFit.fill,
                           )
                         : Image.asset(
-                            context
-                                .watch<Store>()
-                                .storedThemes[context.watch<Store>().index]
-                                .clockTheme,
-                            color: context
-                                .watch<Store>()
-                                .storedThemes[context.watch<Store>().index]
-                                .clockColor,
+                            pvdStore.storedThemes[pvdStore.index].clockTheme,
+                            color: pvdStore
+                                .storedThemes[pvdStore.index].clockColor,
                           ),
                     // Seconds
                     Transform.rotate(
-                      angle: context.watch<Store>().secondsAngle,
+                      angle: pvdStore.secondsAngle,
                       child: Container(
                         child: Container(
                           height: 120,
@@ -113,7 +106,7 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                     ),
                     // Minutes
                     Transform.rotate(
-                      angle: context.watch<Store>().minutesAngle,
+                      angle: pvdStore.minutesAngle,
                       child: Container(
                         child: Container(
                           height: 85,
@@ -127,7 +120,7 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                     ),
                     // Hours
                     Transform.rotate(
-                      angle: context.watch<Store>().hoursAngle,
+                      angle: pvdStore.hoursAngle,
                       child: Container(
                         child: Container(
                           height: 65,

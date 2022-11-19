@@ -8,6 +8,8 @@ class DetailScreen extends StatelessWidget {
   const DetailScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Scaffold(
       body: GestureDetector(
         child: Center(
@@ -20,19 +22,12 @@ class DetailScreen extends StatelessWidget {
                     height: double.infinity,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: context
-                                      .watch<Store>()
-                                      .storedThemes[
-                                          context.watch<Store>().index]
+                          image: pvdStore.storedThemes[pvdStore.index]
                                       .backgroundTheme ==
                                   ''
-                              ? FileImage(File(context
-                                  .watch<Store>()
-                                  .storedThemes[context.watch<Store>().index]
-                                  .imageFile))
-                              : AssetImage(context
-                                  .watch<Store>()
-                                  .storedThemes[context.watch<Store>().index]
+                              ? FileImage(File(pvdStore
+                                  .storedThemes[pvdStore.index].imageFile))
+                              : AssetImage(pvdStore.storedThemes[pvdStore.index]
                                   .backgroundTheme) as ImageProvider,
                           fit: BoxFit.cover),
                     ),

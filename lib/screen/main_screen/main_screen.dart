@@ -23,6 +23,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -46,17 +47,16 @@ class _MainScreenState extends State<MainScreen> {
                   children: [
                     FloatingActionButton(
                       onPressed: () async {
-                        if (Provider.of<Store>(context, listen: false)
-                            .countryDict
-                            .isEmpty) {
-                          await Provider.of<Store>(context, listen: false)
-                              .getCountryList();
+                        // countryDict이 비어 있음 --> api로 부터 세계 나라들 getCountry 연산 안 된 상태
+                        // --> await getCountryList 해서 리스트 로드 이후 시계 페이지로 가면 바로 볼 수 있게끔
+                        // --> 이러면 첫 실행 시도에 한해서 연산 속도 때문에 시계 페이지로 넘어갈 때 시간이 좀 걸리는 단점이 있음
+                        if (pvdStore.countryDict.isEmpty) {
+                          print(pvdStore.countryDict);
+                          await pvdStore.getCountryList();
                         }
-                        Provider.of<Store>(context, listen: false).setIndex(-1);
-                        Provider.of<Store>(context, listen: false)
-                            .setCountry('Seoul');
-                        Provider.of<Store>(context, listen: false)
-                            .getTime('Asia/Seoul');
+                        pvdStore.setIndex(-1);
+                        pvdStore.setCountry('Seoul');
+                        pvdStore.getTime('Asia/Seoul');
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return CustomizeScreen();
                         }));
@@ -74,10 +74,8 @@ class _MainScreenState extends State<MainScreen> {
                             heroTag: "clearButton",
                             backgroundColor: Color(0xFF222324),
                             onPressed: () {
-                              Provider.of<Store>(context, listen: false)
-                                  .removeData();
-                              Provider.of<Store>(context, listen: false)
-                                  .deleteAll();
+                              pvdStore.removeData();
+                              pvdStore.deleteAll();
                             },
                             child: Icon(Icons.refresh),
                           ),
@@ -85,10 +83,8 @@ class _MainScreenState extends State<MainScreen> {
                             heroTag: "saveButton",
                             backgroundColor: Color(0xFF222324),
                             onPressed: () {
-                              Provider.of<Store>(context, listen: false)
-                                  .removeData();
-                              Provider.of<Store>(context, listen: false)
-                                  .saveData();
+                              pvdStore.removeData();
+                              pvdStore.saveData();
                             },
                             child: Icon(Icons.save),
                           ),
@@ -117,18 +113,11 @@ class _MainScreenState extends State<MainScreen> {
                             image: context.watch<Store>().storedThemes.isEmpty
                                 ? AssetImage(
                                     'assets/background/background0.jpg')
-                                : (context
-                                            .watch<Store>()
-                                            .storedThemes[0]
-                                            .backgroundTheme ==
+                                : (pvdStore.storedThemes[0].backgroundTheme ==
                                         ''
-                                    ? FileImage(File(context
-                                        .watch<Store>()
-                                        .storedThemes[0]
-                                        .imageFile))
-                                    : AssetImage(context
-                                        .watch<Store>()
-                                        .storedThemes[0]
+                                    ? FileImage(File(
+                                        pvdStore.storedThemes[0].imageFile))
+                                    : AssetImage(pvdStore.storedThemes[0]
                                         .backgroundTheme) as ImageProvider),
                             fit: BoxFit.cover),
                       ),
@@ -145,28 +134,19 @@ class _MainScreenState extends State<MainScreen> {
                     ReorderableListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: context.watch<Store>().storedThemes.length,
+                      itemCount: pvdStore.storedThemes.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Dismissible(
-                          key: ValueKey(
-                              context.watch<Store>().storedThemes[index]),
+                          key: ValueKey(pvdStore.storedThemes[index]),
                           onDismissed: (direction) {
-                            Provider.of<Store>(context, listen: false)
-                                .deleteTheme(index);
+                            pvdStore.deleteTheme(index);
                           },
                           child: GestureDetector(
                             onTap: () {
-                              Provider.of<Store>(context, listen: false)
-                                  .setIndex(index);
-                              Provider.of<Store>(context, listen: false)
-                                  .setCountry(
-                                      Provider.of<Store>(context, listen: false)
-                                          .storedThemes[index]
-                                          .country); //새로 선택된 지역 정보로 text를 갱신
-                              Provider.of<Store>(context, listen: false)
-                                  .getTime(
-                                      Provider.of<Store>(context, listen: false)
-                                          .country);
+                              pvdStore.setIndex(index);
+                              pvdStore.setCountry(pvdStore.storedThemes[index]
+                                  .country); //새로 선택된 지역 정보로 text를 갱신
+                              pvdStore.getTime(pvdStore.country);
 
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (_) {
@@ -182,19 +162,14 @@ class _MainScreenState extends State<MainScreen> {
                                       height: 100,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                            image: context
-                                                        .watch<Store>()
-                                                        .storedThemes[index]
+                                            image: pvdStore.storedThemes[index]
                                                         .backgroundTheme ==
                                                     ''
-                                                ? FileImage(File(context
-                                                    .watch<Store>()
+                                                ? FileImage(File(pvdStore
                                                     .storedThemes[index]
                                                     .imageFile))
                                                 : AssetImage(
-                                                    context
-                                                        .watch<Store>()
-                                                        .storedThemes[index]
+                                                    pvdStore.storedThemes[index]
                                                         .backgroundTheme,
                                                   ) as ImageProvider,
                                             fit: BoxFit.cover),
@@ -221,10 +196,8 @@ class _MainScreenState extends State<MainScreen> {
                                           child: ListTile(
                                             /**Text 안에 list[i].country로 수정*/
                                             title: Text(
-                                              context
-                                                  .watch<Store>()
-                                                  .storedThemes[index]
-                                                  .country,
+                                              pvdStore
+                                                  .storedThemes[index].country,
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 24,
@@ -238,24 +211,20 @@ class _MainScreenState extends State<MainScreen> {
                                                 size: 30,
                                               ),
                                               /**onPressed 누르면, Customize Screen으로 이동*/
-                                              onPressed: () {
+                                              onPressed: () async {
+                                                //CountryList 완전히 load 된 후 실행하기 위함
+                                                if (pvdStore
+                                                    .countryDict.isEmpty) {
+                                                  await pvdStore
+                                                      .getCountryList();
+                                                }
                                                 //getTime 파라미터로 list안의 country명을 집어넣으면 그에 맞게 동작하게끔 구현해주시면 감사하겠습니다.
-                                                Provider.of<Store>(context,
-                                                        listen: false)
-                                                    .setIndex(index);
-                                                Provider.of<Store>(context,
-                                                        listen: false)
-                                                    .setCountry(Provider.of<
-                                                                Store>(context,
-                                                            listen: false)
-                                                        .storedThemes[index]
-                                                        .country); //새로 선택된 지역 정보로 text를 갱신
-                                                Provider.of<Store>(context,
-                                                        listen: false)
-                                                    .getTime(Provider.of<Store>(
-                                                            context,
-                                                            listen: false)
-                                                        .country);
+                                                pvdStore.setIndex(index);
+                                                pvdStore.setCountry(pvdStore
+                                                    .storedThemes[index]
+                                                    .country); //새로 선택된 지역 정보로 text를 갱신
+                                                pvdStore
+                                                    .getTime(pvdStore.country);
                                                 Navigator.push(context,
                                                     MaterialPageRoute(
                                                         builder: (_) {
@@ -274,8 +243,7 @@ class _MainScreenState extends State<MainScreen> {
                         if (oldIndex < newIndex) {
                           newIndex -= 1;
                         }
-                        Provider.of<Store>(context, listen: false)
-                            .reOrder(oldIndex, newIndex);
+                        pvdStore.reOrder(oldIndex, newIndex);
                       },
                     ),
                   ],

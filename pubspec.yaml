@@ -44,8 +44,8 @@ dependencies:
   shared_preferences: ^2.0.15
   image_picker: ^0.8.6
   image_cropper: ^3.0.1
-  searchfield: ^0.7.2
   fluttertoast: ^8.0.7
+  searchfield: ^0.7.2
 
 dev_dependencies:
   flutter_test:

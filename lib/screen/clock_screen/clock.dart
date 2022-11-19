@@ -23,6 +23,8 @@ class _ClockWidgetState extends State<ClockWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -37,24 +39,22 @@ class _ClockWidgetState extends State<ClockWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '${context.watch<Store>().countryParsed}',
+                        '${pvdStore.countryParsed}',
                         style: TextStyle(
                             fontSize: 32,
                             fontFamily: 'main2',
                             color: context
                                 .watch<Store>()
-                                .storedThemes[context.watch<Store>().index]
+                                .storedThemes[pvdStore.index]
                                 .textColor),
                       ),
                       Text(
-                        '${context.watch<Store>().dateTime}',
+                        '${pvdStore.dateTime}',
                         style: TextStyle(
                             fontSize: 32,
                             fontFamily: 'main2',
-                            color: context
-                                .watch<Store>()
-                                .storedThemes[context.watch<Store>().index]
-                                .textColor),
+                            color: pvdStore
+                                .storedThemes[pvdStore.index].textColor),
                       ),
                     ],
                   )),
@@ -72,18 +72,12 @@ class _ClockWidgetState extends State<ClockWidget> {
               child: Stack(
                 children: [
                   Image.asset(
-                    context
-                        .watch<Store>()
-                        .storedThemes[context.watch<Store>().index]
-                        .clockTheme,
-                    color: context
-                        .watch<Store>()
-                        .storedThemes[context.watch<Store>().index]
-                        .clockColor,
+                    pvdStore.storedThemes[pvdStore.index].clockTheme,
+                    color: pvdStore.storedThemes[pvdStore.index].clockColor,
                   ),
                   // Seconds
                   Transform.rotate(
-                    angle: context.watch<Store>().secondsAngle,
+                    angle: pvdStore.secondsAngle,
                     child: Container(
                       child: Container(
                         height: 120,

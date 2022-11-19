@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
+import 'package:searchfield/searchfield.dart';
 import 'package:world_time/components/store.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:world_time/screen/custom_screen/sample_screen.dart';
@@ -21,7 +22,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
 
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 0)).then((value) =>
+    Future.delayed(const Duration(seconds: 0)).then((value) =>
         Provider.of<StoreTheme>(context, listen: false).clearTheme());
     print(Provider.of<StoreTheme>(context, listen: false).country);
     super.initState();
@@ -29,6 +30,8 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Scaffold(
       appBar: context.watch<Store>().index == -1
           ? AppBar(
@@ -39,26 +42,13 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                   child: TextButton(
                     onPressed: () {
                       StoreTheme theme = StoreTheme();
-                      theme.country =
-                          Provider.of<StoreTheme>(context, listen: false)
-                              .country;
-                      theme.backgroundTheme =
-                          Provider.of<StoreTheme>(context, listen: false)
-                              .backgroundTheme;
-                      theme.clockTheme =
-                          Provider.of<StoreTheme>(context, listen: false)
-                              .clockTheme;
-                      theme.clockColor =
-                          Provider.of<StoreTheme>(context, listen: false)
-                              .clockColor;
-                      theme.textColor =
-                          Provider.of<StoreTheme>(context, listen: false)
-                              .textColor;
-                      theme.imageFile =
-                          Provider.of<StoreTheme>(context, listen: false)
-                              .imageFile;
-                      Provider.of<Store>(context, listen: false)
-                          .getTheme(theme);
+                      theme.country = pvdStoreTheme.country;
+                      theme.backgroundTheme = pvdStoreTheme.backgroundTheme;
+                      theme.clockTheme = pvdStoreTheme.clockTheme;
+                      theme.clockColor = pvdStoreTheme.clockColor;
+                      theme.textColor = pvdStoreTheme.textColor;
+                      theme.imageFile = pvdStoreTheme.imageFile;
+                      pvdStore.getTheme(theme);
                       Navigator.pop(context);
                     },
                     child: const Text(
@@ -79,11 +69,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
       body: Container(
         child: Stack(
           children: [
-            SampleScreen(),
+            const SampleScreen(),
             if (_currentIndex == 0) ...[
-              Country()
+              const Country()
             ] else if (_currentIndex == 1) ...[
-              Clock()
+              const Clock()
             ] else if (_currentIndex == 2) ...[
               GetGalleryImage(),
               Background()
@@ -146,6 +136,8 @@ class GetGalleryImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     Future<void> _cropImage() async {
       print(pickedFile);
       if (pickedFile != '') {
@@ -180,17 +172,12 @@ class GetGalleryImage extends StatelessWidget {
           ],
         );
         if (croppedFile != null) {
-          if (Provider.of<Store>(context, listen: false).index == -1) {
-            Provider.of<StoreTheme>(context, listen: false)
-                .selectImage(croppedFile);
-            Provider.of<StoreTheme>(context, listen: false).removeBackground();
+          if (pvdStore.index == -1) {
+            pvdStoreTheme.selectImage(croppedFile);
+            pvdStoreTheme.removeBackground();
           } else {
-            Provider.of<Store>(context, listen: false)
-                .storedThemes[Provider.of<Store>(context, listen: false).index]
-                .selectImage(croppedFile);
-            Provider.of<Store>(context, listen: false)
-                .storedThemes[Provider.of<Store>(context, listen: false).index]
-                .removeBackground();
+            pvdStore.storedThemes[pvdStore.index].selectImage(croppedFile);
+            pvdStore.storedThemes[pvdStore.index].removeBackground();
           }
         }
       }
@@ -228,6 +215,8 @@ class ThemeColor extends StatefulWidget {
 
 class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return DefaultTabController(
       length: 2,
       child: Align(
@@ -282,47 +271,30 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                       children: [
                         SlidePicker(
                           pickerColor: context.watch<Store>().index == -1
-                              ? context.watch<StoreTheme>().textColor
-                              : context
-                                  .watch<Store>()
-                                  .storedThemes[context.watch<Store>().index]
-                                  .textColor,
+                              ? pvdStoreTheme.textColor
+                              : pvdStore.storedThemes[pvdStore.index].textColor,
                           enableAlpha: false,
                           colorModel: ColorModel.rgb,
                           indicatorSize: const Size(200, 15),
                           onColorChanged: (color) {
-                            Provider.of<Store>(context, listen: false).index ==
-                                    -1
-                                ? Provider.of<StoreTheme>(context,
-                                        listen: false)
-                                    .setTextColor(color)
-                                : Provider.of<Store>(context, listen: false)
-                                    .storedThemes[Provider.of<Store>(context,
-                                            listen: false)
-                                        .index]
+                            pvdStore.index == -1
+                                ? pvdStoreTheme.setTextColor(color)
+                                : pvdStore.storedThemes[pvdStore.index]
                                     .setTextColor(color);
                           },
                         ),
                         SlidePicker(
                           pickerColor: context.watch<Store>().index == -1
-                              ? context.watch<StoreTheme>().clockColor
-                              : context
-                                  .watch<Store>()
-                                  .storedThemes[context.watch<Store>().index]
-                                  .clockColor,
+                              ? pvdStoreTheme.clockColor
+                              : pvdStore
+                                  .storedThemes[pvdStore.index].clockColor,
                           enableAlpha: false,
                           colorModel: ColorModel.rgb,
                           indicatorSize: const Size(200, 15),
                           onColorChanged: (color) {
-                            Provider.of<Store>(context, listen: false).index ==
-                                    -1
-                                ? Provider.of<StoreTheme>(context,
-                                        listen: false)
-                                    .setClockColor(color)
-                                : Provider.of<Store>(context, listen: false)
-                                    .storedThemes[Provider.of<Store>(context,
-                                            listen: false)
-                                        .index]
+                            pvdStore.index == -1
+                                ? pvdStoreTheme.setClockColor(color)
+                                : pvdStore.storedThemes[pvdStore.index]
                                     .setClockColor(color);
                           },
                         ),
@@ -342,6 +314,8 @@ class Background extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Align(
       alignment: Alignment(0.0, 0.9),
       child: Container(
@@ -356,11 +330,8 @@ class Background extends StatelessWidget {
               key: ValueKey(index),
               onTap: () {
                 Provider.of<Store>(context, listen: false).index == -1
-                    ? Provider.of<StoreTheme>(context, listen: false)
-                        .setBackground(index)
-                    : Provider.of<Store>(context, listen: false)
-                        .storedThemes[
-                            Provider.of<Store>(context, listen: false).index]
+                    ? pvdStoreTheme.setBackground(index)
+                    : pvdStore.storedThemes[pvdStore.index]
                         .setBackground(index);
               },
               child: Padding(
@@ -383,6 +354,8 @@ class Clock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Align(
       alignment: Alignment(0.0, 0.9),
       child: Container(
@@ -397,12 +370,8 @@ class Clock extends StatelessWidget {
               key: ValueKey(index),
               onTap: () {
                 Provider.of<Store>(context, listen: false).index == -1
-                    ? Provider.of<StoreTheme>(context, listen: false)
-                        .setClock(index)
-                    : Provider.of<Store>(context, listen: false)
-                        .storedThemes[
-                            Provider.of<Store>(context, listen: false).index]
-                        .setClock(index);
+                    ? pvdStoreTheme.setClock(index)
+                    : pvdStore.storedThemes[pvdStore.index].setClock(index);
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -429,51 +398,107 @@ class Country extends StatefulWidget {
 }
 
 class _CountryState extends State<Country> {
+  final _formKey = GlobalKey<FormState>();
+  final _searchController = TextEditingController();
+  final focus = FocusNode();
+  var _hint = "Search Country";
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    focus.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Align(
-        alignment: const Alignment(0.0, 1),
-        child: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.25,
-            decoration: const BoxDecoration(color: Colors.white),
-            child: ListView(
-              scrollDirection: Axis.vertical,
-              children: List.generate(
-                  Provider.of<Store>(context).countryListParsed.length, (i) {
-                return GestureDetector(
-                  key: ValueKey(i),
-                  child: ListTile(
-                    title:
-                        Text(Provider.of<Store>(context).countryListParsed[i]),
-                    onTap: () {
-                      Provider.of<Store>(context, listen: false).setCountry(
-                          Provider.of<Store>(context, listen: false)
-                              .countryListParsed[i]); //새로 선택된 지역 정보로 text를 갱신
-                      Provider.of<Store>(context, listen: false).getTime(
-                          Provider.of<Store>(context, listen: false).country);
-                      Provider.of<Store>(context, listen: false).index == -1
-                          ? Provider.of<StoreTheme>(context, listen: false)
-                                  .country =
-                              Provider.of<Store>(context, listen: false)
-                                  .countryListParsed[i]
-                          : Provider.of<Store>(context, listen: false)
-                                  .storedThemes[
-                                      Provider.of<Store>(context, listen: false)
-                                          .index]
-                                  .country =
-                              Provider.of<Store>(context, listen: false)
-                                  .countryListParsed[i]; //갱신된 지역 정보로 시간 또한 업데이트
-                    }, //StoreTheme에 있던 country정보를 Store에서 일괄 관리하는게 나을 것 같아서 이전하였습니다
-                  ),
-                );
-              }).toList(),
+    Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
+
+    return Stack(
+      children: [
+        Form(
+          key: _formKey,
+          child: SearchField(
+            //https://pub.dev/packages/searchfield 패키지 사용
+            suggestions: pvdStore.countryListParsed
+                .map((country) => SearchFieldListItem(country,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          country,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    )))
+                .toList(),
+            searchInputDecoration: InputDecoration(
+              //input box 관련 ui
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.grey,
+                  width: 3.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              border: const OutlineInputBorder(),
             ),
+            suggestionsDecoration: const BoxDecoration(
+              //검색창 리스트 목록 관련 ui
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+              color: Colors.white,
+            ),
+            suggestionItemDecoration: const BoxDecoration(//검색창 리스트 개별 아이템 관련 ui
+
+                ),
+            suggestionState: Suggestion.expand,
+            textInputAction: TextInputAction.done,
+            onSubmit: (value) {
+              if (pvdStore.countryListParsed.contains(value) &&
+                  value.isNotEmpty) {
+                //validity 검사
+                pvdStore.setCountry(value); //새로 선택된 지역 정보로 text를 갱신
+                pvdStore.getTime(pvdStore.country);
+                pvdStore.index == -1
+                    ? pvdStoreTheme.country = value
+                    : pvdStore.storedThemes[pvdStore.index].country = value;
+                _searchController.text = '';
+              } else {
+                _searchController.text = '';
+              }
+            },
+            hint: _hint,
+            focusNode: focus,
+            controller: _searchController,
+            hasOverlay: false,
+            searchStyle: const TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+            ),
+            maxSuggestionsInViewPort: 5,
+            itemHeight: 50,
+            onSuggestionTap: (x) {},
           ),
         ),
-      ),
+      ],
     );
   }
 }
