@@ -4,12 +4,26 @@ import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
 import 'dart:io';
 
-class DetailScreen extends StatelessWidget {
-  const DetailScreen({Key? key}) : super(key: key);
+class DetailScreen extends StatefulWidget {
+  const DetailScreen({Key? key, this.decreaseCount}) : super(key: key);
+  final decreaseCount;
+
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  @override
+  void dispose() {
+    Future.delayed(Duration.zero, () {
+      widget.decreaseCount();
+    });
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Store pvdStore = Provider.of<Store>(context, listen: false);
-    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Scaffold(
       body: GestureDetector(
         child: Center(

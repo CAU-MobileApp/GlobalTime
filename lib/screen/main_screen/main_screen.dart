@@ -13,17 +13,52 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  int mainPageCheck = 0;
+
+  void increaseCount() {
+    setState(() {
+      ++mainPageCheck;
+    });
+  }
+
+  void decreaseCount() {
+    setState(() {
+      --mainPageCheck;
+    });
+  }
+
   @override
   void initState() {
-    Provider.of<Store>(context, listen: false)
-        .getCountryList(); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
-    Provider.of<Store>(context, listen: false).getData();
+    Provider.of<Store>(context, listen: false).getCountryList().then((value) =>
+        Provider.of<Store>(context, listen: false)
+            .getData()); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty &&
+        mainPageCheck == 0) {
+      Provider.of<Store>(context, listen: false).setMainCountry(
+          Provider.of<Store>(context, listen: false).storedThemes[0].country);
+      Provider.of<Store>(context, listen: false)
+          .getMainTime(Provider.of<Store>(context, listen: false).country);
+      increaseCount();
+    } else if (Provider.of<Store>(context, listen: false)
+            .storedThemes
+            .isEmpty &&
+        mainPageCheck == 0) {
+      Provider.of<Store>(context, listen: false).getMainTime('Asia/Seoul');
+      increaseCount();
+    }
+    context.watch<Store>().setTime();
   }
 
   @override
   Widget build(BuildContext context) {
     Store pvdStore = Provider.of<Store>(context, listen: false);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -58,7 +93,7 @@ class _MainScreenState extends State<MainScreen> {
                         pvdStore.setCountry('Seoul');
                         pvdStore.getTime('Asia/Seoul');
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
-                          return CustomizeScreen();
+                          return CustomizeScreen(decreaseCount: decreaseCount);
                         }));
                       },
                       backgroundColor: Color(0xFF222324),
@@ -110,7 +145,7 @@ class _MainScreenState extends State<MainScreen> {
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(30),
                         image: DecorationImage(
-                            image: context.watch<Store>().storedThemes.isEmpty
+                            image: pvdStore.storedThemes.isEmpty
                                 ? AssetImage(
                                     'assets/background/background0.jpg')
                                 : (pvdStore.storedThemes[0].backgroundTheme ==
@@ -122,11 +157,109 @@ class _MainScreenState extends State<MainScreen> {
                             fit: BoxFit.cover),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 0, 20),
-                        child: Stack(
-                          children: [],
-                        ),
-                      ),
+                          padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                          child: Stack(
+                            children: [
+                              pvdStore.storedThemes.isEmpty
+                                  ? Text(
+                                      'Seoul  ${pvdStore.dateTime}',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 18),
+                                    )
+                                  : Text(
+                                      '${pvdStore.storedThemes[0].country}   ${pvdStore.dateTime}',
+                                      style: TextStyle(
+                                          color: pvdStore
+                                              .storedThemes[0].textColor,
+                                          fontSize: 18),
+                                    ),
+                              Align(
+                                alignment: Alignment(0.0, 1),
+                                child: Container(
+                                  width: 225,
+                                  height: 225,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white30,
+                                      border: Border.all(
+                                          color: Colors.black45, width: 10),
+                                      borderRadius: BorderRadius.circular(150)),
+                                  child: Stack(
+                                    children: [
+                                      Image.asset(
+                                        pvdStore.storedThemes.isEmpty
+                                            ? 'assets/clock_layout/clock0.png'
+                                            : pvdStore
+                                                .storedThemes[0].clockTheme,
+                                        color: pvdStore.storedThemes.isEmpty
+                                            ? Colors.white
+                                            : pvdStore
+                                                .storedThemes[0].clockColor,
+                                      ),
+                                      // Seconds
+                                      Transform.rotate(
+                                        angle: pvdStore.secondsAngle,
+                                        child: Container(
+                                          child: Container(
+                                            height: 120,
+                                            width: 2,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black45,
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                          alignment: Alignment(0, -0.75),
+                                        ),
+                                      ),
+                                      // Minutes
+                                      Transform.rotate(
+                                        angle:
+                                            context.watch<Store>().minutesAngle,
+                                        child: Container(
+                                          child: Container(
+                                            height: 85,
+                                            width: 4,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                          alignment: Alignment(0, -0.4),
+                                        ),
+                                      ),
+                                      // Hours
+                                      Transform.rotate(
+                                        angle:
+                                            context.watch<Store>().hoursAngle,
+                                        child: Container(
+                                          child: Container(
+                                            height: 65,
+                                            width: 3,
+                                            decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                          alignment: Alignment(0, -0.25),
+                                        ),
+                                      ),
+                                      // Dot
+                                      Container(
+                                        child: Container(
+                                          height: 15,
+                                          width: 15,
+                                          decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(50)),
+                                        ),
+                                        alignment: Alignment(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          )),
                     ),
                     const SizedBox(
                       height: 20,
@@ -150,7 +283,8 @@ class _MainScreenState extends State<MainScreen> {
 
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (_) {
-                                return const DetailScreen();
+                                return DetailScreen(
+                                    decreaseCount: decreaseCount);
                               }));
                             },
                             child: Hero(
@@ -228,7 +362,9 @@ class _MainScreenState extends State<MainScreen> {
                                                 Navigator.push(context,
                                                     MaterialPageRoute(
                                                         builder: (_) {
-                                                  return CustomizeScreen();
+                                                  return CustomizeScreen(
+                                                      decreaseCount:
+                                                          decreaseCount);
                                                 }));
                                               },
                                             ),
@@ -240,10 +376,22 @@ class _MainScreenState extends State<MainScreen> {
                         );
                       },
                       onReorder: (int oldIndex, int newIndex) {
+                        print(oldIndex);
+                        print(newIndex);
                         if (oldIndex < newIndex) {
                           newIndex -= 1;
                         }
-                        pvdStore.reOrder(oldIndex, newIndex);
+                        if (newIndex == 0) {
+                          Provider.of<Store>(context, listen: false).setCountry(
+                              Provider.of<Store>(context, listen: false)
+                                  .storedThemes[oldIndex]
+                                  .country);
+                          Provider.of<Store>(context, listen: false).getTime(
+                              Provider.of<Store>(context, listen: false)
+                                  .country);
+                        }
+                        Provider.of<Store>(context, listen: false)
+                            .reOrder(oldIndex, newIndex);
                       },
                     ),
                   ],

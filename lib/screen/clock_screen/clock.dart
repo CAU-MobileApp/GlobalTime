@@ -24,7 +24,6 @@ class _ClockWidgetState extends State<ClockWidget> {
   @override
   Widget build(BuildContext context) {
     Store pvdStore = Provider.of<Store>(context, listen: false);
-    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: false);
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -39,7 +38,7 @@ class _ClockWidgetState extends State<ClockWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '${pvdStore.countryParsed}',
+                        pvdStore.countryParsed,
                         style: TextStyle(
                             fontSize: 32,
                             fontFamily: 'main2',
@@ -49,7 +48,7 @@ class _ClockWidgetState extends State<ClockWidget> {
                                 .textColor),
                       ),
                       Text(
-                        '${pvdStore.dateTime}',
+                        pvdStore.dateTime,
                         style: TextStyle(
                             fontSize: 32,
                             fontFamily: 'main2',

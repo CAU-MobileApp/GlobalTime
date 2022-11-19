@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
 class Store extends ChangeNotifier {
   double secondsAngle = 0;
@@ -18,6 +16,7 @@ class Store extends ChangeNotifier {
   String countryParsed = 'Seoul';
   String country = 'Asia/Seoul';
   int index = 0;
+
   Map countryDict = {};
   var local;
   late Timer timer;
@@ -41,6 +40,11 @@ class Store extends ChangeNotifier {
         temp2.imageFile = token[5].trim();
         storedThemes.add(temp2);
       }
+      setCountry(storedThemes[0].country);
+      getTime(country);
+    } else {
+      print('뭐임');
+      getTime('Asia/Seoul');
     }
   }
 
@@ -99,6 +103,25 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> getMainTime(country) async {
+    Response response =
+        await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
+    Map data = jsonDecode(response.body);
+    dateTime = data['datetime'].substring(0, 10);
+    hourOffset = data['utc_offset'].substring(1, 3);
+    minuteOffset = data['utc_offset'].substring(4, 6);
+    var now = DateTime.now();
+    local = now.timeZoneOffset.toString().split(':');
+  }
+
+  void setMainCountry(text) {
+    if (countryDict.isNotEmpty) {
+      country = countryDict[text] +
+          text; //선택된 나라의 시간대를 가져오기 위해 string을 api format에 맞게 바꿨습니다
+      countryParsed = text; //"지역" 정보만 추출
+    }
+  }
+
   void setTime() {
     timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       var now = DateTime.now();
@@ -136,7 +159,6 @@ class Store extends ChangeNotifier {
       }
     }
     countryListParsed.sort();
-
     notifyListeners();
   }
 
@@ -145,8 +167,8 @@ class Store extends ChangeNotifier {
       country = countryDict[text] +
           text; //선택된 나라의 시간대를 가져오기 위해 string을 api format에 맞게 바꿨습니다
       countryParsed = text; //"지역" 정보만 추출
-      notifyListeners();
     }
+    notifyListeners();
   }
 }
 

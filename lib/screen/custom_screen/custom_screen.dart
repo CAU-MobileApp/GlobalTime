@@ -8,10 +8,8 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:world_time/screen/custom_screen/sample_screen.dart';
 
 class CustomizeScreen extends StatefulWidget {
-  const CustomizeScreen({
-    Key? key,
-  }) : super(key: key);
-
+  const CustomizeScreen({Key? key, this.decreaseCount}) : super(key: key);
+  final decreaseCount;
   @override
   State<CustomizeScreen> createState() => _CustomizeScreenState();
 }
@@ -26,6 +24,14 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
         Provider.of<StoreTheme>(context, listen: false).clearTheme());
     print(Provider.of<StoreTheme>(context, listen: false).country);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    Future.delayed(Duration.zero, () {
+      widget.decreaseCount();
+    });
+    super.dispose();
   }
 
   @override
