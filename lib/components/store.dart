@@ -15,6 +15,19 @@ class Store extends ChangeNotifier {
   final List<String> countryListParsed = List.empty(growable: true);
   final List<StoreTheme> storedThemes = List.empty(growable: true);
   final List<String> localData = List.empty(growable: true);
+  late StoreTheme themeBeforeEdited;
+
+  void updateTheme(StoreTheme newTheme){
+    themeBeforeEdited.country = newTheme.country;
+    themeBeforeEdited.backgroundTheme = newTheme.backgroundTheme;
+    themeBeforeEdited.clockTheme = newTheme.clockTheme;
+    themeBeforeEdited.clockColor = newTheme.clockColor;
+    themeBeforeEdited.textColor = newTheme.textColor;
+    themeBeforeEdited.imageFile = newTheme.imageFile;
+    themeBeforeEdited.hourOffset = newTheme.hourOffset;
+    themeBeforeEdited.minuteOffset = newTheme.minuteOffset;
+    notifyListeners();
+  }
 
   getData() async {
     var storage = await SharedPreferences.getInstance();
@@ -237,6 +250,18 @@ class StoreTheme extends ChangeNotifier {
     imageFile = '';
     hourOffset = '9';
     minuteOffset = '0';
+    notifyListeners();
+  }
+
+  void setTheme(StoreTheme theme){
+    clockTheme = theme.clockTheme;
+    backgroundTheme = theme.backgroundTheme;
+    country = theme.country;
+    textColor = theme.textColor;
+    clockColor = theme.clockColor;
+    imageFile = theme.imageFile;
+    hourOffset = theme.hourOffset;
+    minuteOffset = theme.minuteOffset;
     notifyListeners();
   }
 }
