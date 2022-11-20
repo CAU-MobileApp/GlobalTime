@@ -70,11 +70,31 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             )
           : AppBar(
               backgroundColor: Colors.black87,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                  child: TextButton(
+                    onPressed: () {
+
+
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Edit',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 20,
+                        fontFamily: 'main',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
       body: Container(
         child: Stack(
