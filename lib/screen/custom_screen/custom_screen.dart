@@ -21,12 +21,17 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   @override
   void initState() {
     // TODO: implement initState
-
     super.initState();
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
+    Provider.of<StoreTheme>(context, listen: true).clearTheme();
     super.dispose();
   }
 
