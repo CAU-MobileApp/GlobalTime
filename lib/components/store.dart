@@ -235,6 +235,8 @@ class StoreTheme extends ChangeNotifier {
     textColor = Colors.white;
     clockColor = Colors.white;
     imageFile = '';
+    hourOffset = '9';
+    minuteOffset = '0';
     notifyListeners();
   }
 }
