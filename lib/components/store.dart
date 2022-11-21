@@ -17,15 +17,8 @@ class Store extends ChangeNotifier {
   final List<String> localData = List.empty(growable: true);
   late StoreTheme themeBeforeEdited;
 
-  void updateTheme(StoreTheme newTheme){
-    themeBeforeEdited.country = newTheme.country;
-    themeBeforeEdited.backgroundTheme = newTheme.backgroundTheme;
-    themeBeforeEdited.clockTheme = newTheme.clockTheme;
-    themeBeforeEdited.clockColor = newTheme.clockColor;
-    themeBeforeEdited.textColor = newTheme.textColor;
-    themeBeforeEdited.imageFile = newTheme.imageFile;
-    themeBeforeEdited.hourOffset = newTheme.hourOffset;
-    themeBeforeEdited.minuteOffset = newTheme.minuteOffset;
+  void saveTheme(StoreTheme theme){
+    themeBeforeEdited = theme;
     notifyListeners();
   }
 

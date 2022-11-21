@@ -32,7 +32,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
 
   @override
   void dispose() {
-    Provider.of<StoreTheme>(context, listen: true).clearTheme();
+    Provider.of<StoreTheme>(context, listen: false).clearTheme();
     super.dispose();
   }
 

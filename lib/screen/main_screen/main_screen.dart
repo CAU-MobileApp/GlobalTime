@@ -204,8 +204,8 @@ class _MainScreenState extends State<MainScreen> {
                                             title: Text(
                                               pvdStore
                                                   .storedThemes[index].country,
-                                              style: const TextStyle(
-                                                color: Colors.white,
+                                              style: TextStyle(
+                                                color: pvdStore.storedThemes[index].textColor,
                                                 fontSize: 24,
                                                 fontFamily: 'main2',
                                               ),
@@ -235,7 +235,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 themeBeforeEdited.setTheme(Provider.of<Store>(context, listen: false).storedThemes[index]);
 
                                                 //custom페이지에서 위 정보를 access 및 관리하기 위해 Store class에 별도로 저장
-                                                Provider.of<Store>(context, listen: false).themeBeforeEdited = themeBeforeEdited;
+                                                Provider.of<Store>(context, listen: false).saveTheme(themeBeforeEdited);
 
                                                 Navigator.push(context,MaterialPageRoute(builder: (_) => const CustomizeScreen()));
                                               },
