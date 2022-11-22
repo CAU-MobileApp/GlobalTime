@@ -88,18 +88,15 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                 backgroundColor: Colors.black87,
                 leading: IconButton(
                     onPressed: () {
-                      var pvdStoreThemeTemp =
-                          Provider.of<StoreTheme>(context, listen: false);
                       var pvdStoreTemp =
-                          Provider.of<Store>(context, listen: false);
+                          Provider.of<Store>(context, listen: true);
                       // 뒤로가기 실행하기 user에 의해 edit되었던 내용 대신
                       // storedThemes[index]의 기존 데이터였던 themeBeforeEdited 내용으로
                       // StoreTheme 및 storedThemes[index] 복구
                       if (pvdStoreTemp.index != -1) {
-                        pvdStoreThemeTemp
-                            .setTheme(pvdStoreTemp.themeBeforeEdited);
                         pvdStoreTemp.storedThemes[pvdStoreTemp.index] =
                             pvdStoreTemp.themeBeforeEdited;
+                        pvdStoreTemp.storedThemes[pvdStoreTemp.index].setTime();
                       }
                       Navigator.pop(context); //뒤로가기
                     },
@@ -110,10 +107,6 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                     child: TextButton(
                       onPressed: () {
                         pvdStore.saveData();
-                        Provider.of<Store>(context, listen: false)
-                            .storedThemes
-                            .last
-                            .setTime();
                         Navigator.pop(context);
                       },
                       child: const Text(
