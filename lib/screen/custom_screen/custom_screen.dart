@@ -26,16 +26,6 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future<bool> _onBackKey() async {
     var pvdStoreThemeTemp = Provider.of<StoreTheme>(context, listen: false);
     var pvdStoreTemp = Provider.of<Store>(context, listen: false);
@@ -75,6 +65,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                         theme.minuteOffset = pvdStoreTheme.minuteOffset;
                         Provider.of<Store>(context, listen: false)
                             .getTheme(theme);
+                        pvdStore.saveData();
+                        Provider.of<Store>(context, listen: false)
+                            .storedThemes
+                            .last
+                            .setTime();
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -93,18 +88,15 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                 backgroundColor: Colors.black87,
                 leading: IconButton(
                     onPressed: () {
-                      var pvdStoreThemeTemp =
-                          Provider.of<StoreTheme>(context, listen: false);
                       var pvdStoreTemp =
-                          Provider.of<Store>(context, listen: false);
+                          Provider.of<Store>(context, listen: true);
                       // 뒤로가기 실행하기 user에 의해 edit되었던 내용 대신
                       // storedThemes[index]의 기존 데이터였던 themeBeforeEdited 내용으로
                       // StoreTheme 및 storedThemes[index] 복구
                       if (pvdStoreTemp.index != -1) {
-                        pvdStoreThemeTemp
-                            .setTheme(pvdStoreTemp.themeBeforeEdited);
                         pvdStoreTemp.storedThemes[pvdStoreTemp.index] =
                             pvdStoreTemp.themeBeforeEdited;
+                        pvdStoreTemp.storedThemes[pvdStoreTemp.index].setTime();
                       }
                       Navigator.pop(context); //뒤로가기
                     },
@@ -114,6 +106,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                     padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                     child: TextButton(
                       onPressed: () {
+                        pvdStore.saveData();
                         Navigator.pop(context);
                       },
                       child: const Text(
