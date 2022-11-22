@@ -22,6 +22,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    Provider.of<StoreTheme>(context, listen: false).clearTheme();
     super.initState();
   }
 
@@ -32,16 +33,16 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
 
   @override
   void dispose() {
-    Provider.of<StoreTheme>(context, listen: false).clearTheme();
     super.dispose();
   }
 
-  Future<bool> _onBackKey() async{
+  Future<bool> _onBackKey() async {
     var pvdStoreThemeTemp = Provider.of<StoreTheme>(context, listen: false);
     var pvdStoreTemp = Provider.of<Store>(context, listen: false);
-    if (pvdStoreTemp.index != -1){
+    if (pvdStoreTemp.index != -1) {
       pvdStoreThemeTemp.setTheme(pvdStoreTemp.themeBeforeEdited);
-      pvdStoreTemp.storedThemes[pvdStoreTemp.index] = pvdStoreTemp.themeBeforeEdited;
+      pvdStoreTemp.storedThemes[pvdStoreTemp.index] =
+          pvdStoreTemp.themeBeforeEdited;
     }
     return true;
   }
@@ -51,7 +52,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
     Store pvdStore = Provider.of<Store>(context, listen: true);
     StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     return WillPopScope(
-      onWillPop: (){
+      onWillPop: () {
         return _onBackKey();
       },
       child: Scaffold(
@@ -90,20 +91,24 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
               )
             : AppBar(
                 backgroundColor: Colors.black87,
-                leading:  IconButton(
-                onPressed: () {
-                  var pvdStoreThemeTemp = Provider.of<StoreTheme>(context, listen: false);
-                  var pvdStoreTemp = Provider.of<Store>(context, listen: false);
-                  // 뒤로가기 실행하기 user에 의해 edit되었던 내용 대신
-                  // storedThemes[index]의 기존 데이터였던 themeBeforeEdited 내용으로
-                  // StoreTheme 및 storedThemes[index] 복구
-                  if (pvdStoreTemp.index != -1){
-                    pvdStoreThemeTemp.setTheme(pvdStoreTemp.themeBeforeEdited);
-                    pvdStoreTemp.storedThemes[pvdStoreTemp.index] = pvdStoreTemp.themeBeforeEdited;
-                  }
-                  Navigator.pop(context); //뒤로가기
-                },
-                icon: const Icon(Icons.arrow_back)),
+                leading: IconButton(
+                    onPressed: () {
+                      var pvdStoreThemeTemp =
+                          Provider.of<StoreTheme>(context, listen: false);
+                      var pvdStoreTemp =
+                          Provider.of<Store>(context, listen: false);
+                      // 뒤로가기 실행하기 user에 의해 edit되었던 내용 대신
+                      // storedThemes[index]의 기존 데이터였던 themeBeforeEdited 내용으로
+                      // StoreTheme 및 storedThemes[index] 복구
+                      if (pvdStoreTemp.index != -1) {
+                        pvdStoreThemeTemp
+                            .setTheme(pvdStoreTemp.themeBeforeEdited);
+                        pvdStoreTemp.storedThemes[pvdStoreTemp.index] =
+                            pvdStoreTemp.themeBeforeEdited;
+                      }
+                      Navigator.pop(context); //뒤로가기
+                    },
+                    icon: const Icon(Icons.arrow_back)),
                 actions: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),

@@ -17,7 +17,7 @@ class Store extends ChangeNotifier {
   final List<String> localData = List.empty(growable: true);
   late StoreTheme themeBeforeEdited;
 
-  void saveTheme(StoreTheme theme){
+  void saveTheme(StoreTheme theme) {
     themeBeforeEdited = theme;
     notifyListeners();
   }
@@ -243,10 +243,9 @@ class StoreTheme extends ChangeNotifier {
     imageFile = '';
     hourOffset = '9';
     minuteOffset = '0';
-    notifyListeners();
   }
 
-  void setTheme(StoreTheme theme){
+  void setTheme(StoreTheme theme) {
     clockTheme = theme.clockTheme;
     backgroundTheme = theme.backgroundTheme;
     country = theme.country;
