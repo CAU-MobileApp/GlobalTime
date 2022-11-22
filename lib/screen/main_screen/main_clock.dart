@@ -3,10 +3,37 @@ import 'package:world_time/components/store.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
-class MainClock extends StatelessWidget {
+class MainClock extends StatefulWidget {
   const MainClock({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<MainClock> createState() => _MainClockState();
+}
+
+class _MainClockState extends State<MainClock> {
+  bool check = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty &&
+        check == false) {
+      check = true;
+    } else if (Provider.of<Store>(context, listen: false)
+            .storedThemes
+            .isEmpty &&
+        check == true) {
+      check = false;
+      Provider.of<StoreTheme>(context, listen: true).getMainTime('Asia/Seoul');
+    }
+    if (check == true) {
+      Provider.of<Store>(context, listen: true).storedThemes[0].setTime();
+    } else {
+      Provider.of<StoreTheme>(context, listen: true).setTime();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

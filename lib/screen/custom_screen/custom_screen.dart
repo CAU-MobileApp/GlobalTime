@@ -27,12 +27,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   }
 
   Future<bool> _onBackKey() async {
-    var pvdStoreThemeTemp = Provider.of<StoreTheme>(context, listen: false);
     var pvdStoreTemp = Provider.of<Store>(context, listen: false);
     if (pvdStoreTemp.index != -1) {
-      pvdStoreThemeTemp.setTheme(pvdStoreTemp.themeBeforeEdited);
       pvdStoreTemp.storedThemes[pvdStoreTemp.index] =
           pvdStoreTemp.themeBeforeEdited;
+      pvdStoreTemp.storedThemes[pvdStoreTemp.index].setTime();
     }
     return true;
   }

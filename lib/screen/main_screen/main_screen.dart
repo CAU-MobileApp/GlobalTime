@@ -15,39 +15,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  bool check = true;
-
   @override
   void initState() {
     Provider.of<Store>(context, listen: false).getCountryList().then((value) =>
         Provider.of<Store>(context, listen: false)
             .getData()); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty &&
-        check == false) {
-      check = true;
-    } else if (Provider.of<Store>(context, listen: false)
-            .storedThemes
-            .isEmpty &&
-        check == true) {
-      check = false;
-      Provider.of<StoreTheme>(context, listen: true).getMainTime('Asia/Seoul');
-    }
-    if (check == true) {
-      Provider.of<Store>(context, listen: true).storedThemes[0].setTime();
-    } else {
-      Provider.of<StoreTheme>(context, listen: true).setTime();
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
