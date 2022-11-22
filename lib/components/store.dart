@@ -15,6 +15,12 @@ class Store extends ChangeNotifier {
   final List<String> countryListParsed = List.empty(growable: true);
   final List<StoreTheme> storedThemes = List.empty(growable: true);
   final List<String> localData = List.empty(growable: true);
+  late StoreTheme themeBeforeEdited;
+
+  void saveTheme(StoreTheme theme) {
+    themeBeforeEdited = theme;
+    notifyListeners();
+  }
 
   getData() async {
     var storage = await SharedPreferences.getInstance();
@@ -237,6 +243,17 @@ class StoreTheme extends ChangeNotifier {
     imageFile = '';
     hourOffset = '9';
     minuteOffset = '0';
+  }
+
+  void setTheme(StoreTheme theme) {
+    clockTheme = theme.clockTheme;
+    backgroundTheme = theme.backgroundTheme;
+    country = theme.country;
+    textColor = theme.textColor;
+    clockColor = theme.clockColor;
+    imageFile = theme.imageFile;
+    hourOffset = theme.hourOffset;
+    minuteOffset = theme.minuteOffset;
     notifyListeners();
   }
 }

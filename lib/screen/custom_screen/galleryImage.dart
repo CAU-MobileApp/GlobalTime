@@ -27,7 +27,7 @@ class GalleryImage extends StatelessWidget {
                 toolbarTitle: 'Cropper',
                 toolbarColor: Colors.deepOrange,
                 toolbarWidgetColor: Colors.white,
-                initAspectRatio: CropAspectRatioPreset.ratio9x16,
+                initAspectRatio: CropAspectRatioPreset.ratio16x9,
                 lockAspectRatio: false),
             IOSUiSettings(
               title: 'Cropper',
