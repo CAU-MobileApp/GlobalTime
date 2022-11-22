@@ -15,39 +15,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  bool check = true;
-
   @override
   void initState() {
     Provider.of<Store>(context, listen: false).getCountryList().then((value) =>
         Provider.of<Store>(context, listen: false)
             .getData()); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty &&
-        check == false) {
-      check = true;
-    } else if (Provider.of<Store>(context, listen: false)
-            .storedThemes
-            .isEmpty &&
-        check == true) {
-      check = false;
-      Provider.of<StoreTheme>(context, listen: true).getMainTime('Asia/Seoul');
-    }
-    if (check == true) {
-      Provider.of<Store>(context, listen: true).storedThemes[0].setTime();
-    } else {
-      Provider.of<StoreTheme>(context, listen: true).setTime();
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -223,13 +196,20 @@ class _MainScreenState extends State<MainScreen> {
                                                     .storedThemes[index]
                                                     .country); //새로 선택된 지역 정보로 text를 갱신
 
+                                                //edit하러 가기 전에 클릭 눌린 storeTheme[index]의 테마 정보를 themeBeforeEdited에 저장
+                                                final StoreTheme
+                                                    themeBeforeEdited =
+                                                    StoreTheme();
+                                                themeBeforeEdited.setTheme(
+                                                    Provider.of<Store>(context,
+                                                            listen: false)
+                                                        .storedThemes[index]);
+
                                                 //custom페이지에서 위 정보를 access 및 관리하기 위해 Store class에 별도로 저장
                                                 Provider.of<Store>(context,
                                                         listen: false)
-                                                    .saveTheme(Provider.of<
-                                                                Store>(context,
-                                                            listen: false)
-                                                        .storedThemes[index]);
+                                                    .saveTheme(
+                                                        themeBeforeEdited);
 
                                                 Navigator.push(
                                                     context,
