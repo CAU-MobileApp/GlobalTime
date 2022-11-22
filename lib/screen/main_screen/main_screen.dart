@@ -223,13 +223,20 @@ class _MainScreenState extends State<MainScreen> {
                                                     .storedThemes[index]
                                                     .country); //새로 선택된 지역 정보로 text를 갱신
 
+                                                //edit하러 가기 전에 클릭 눌린 storeTheme[index]의 테마 정보를 themeBeforeEdited에 저장
+                                                final StoreTheme
+                                                    themeBeforeEdited =
+                                                    StoreTheme();
+                                                themeBeforeEdited.setTheme(
+                                                    Provider.of<Store>(context,
+                                                            listen: false)
+                                                        .storedThemes[index]);
+
                                                 //custom페이지에서 위 정보를 access 및 관리하기 위해 Store class에 별도로 저장
                                                 Provider.of<Store>(context,
                                                         listen: false)
-                                                    .saveTheme(Provider.of<
-                                                                Store>(context,
-                                                            listen: false)
-                                                        .storedThemes[index]);
+                                                    .saveTheme(
+                                                        themeBeforeEdited);
 
                                                 Navigator.push(
                                                     context,

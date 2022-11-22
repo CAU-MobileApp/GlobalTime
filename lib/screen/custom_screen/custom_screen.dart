@@ -89,7 +89,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                 leading: IconButton(
                     onPressed: () {
                       var pvdStoreTemp =
-                          Provider.of<Store>(context, listen: true);
+                          Provider.of<Store>(context, listen: false);
                       // 뒤로가기 실행하기 user에 의해 edit되었던 내용 대신
                       // storedThemes[index]의 기존 데이터였던 themeBeforeEdited 내용으로
                       // StoreTheme 및 storedThemes[index] 복구
