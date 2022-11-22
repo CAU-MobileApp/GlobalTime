@@ -26,16 +26,6 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future<bool> _onBackKey() async {
     var pvdStoreThemeTemp = Provider.of<StoreTheme>(context, listen: false);
     var pvdStoreTemp = Provider.of<Store>(context, listen: false);
@@ -75,6 +65,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                         theme.minuteOffset = pvdStoreTheme.minuteOffset;
                         Provider.of<Store>(context, listen: false)
                             .getTheme(theme);
+                        pvdStore.saveData();
+                        Provider.of<Store>(context, listen: false)
+                            .storedThemes
+                            .last
+                            .setTime();
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -114,6 +109,11 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                     padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                     child: TextButton(
                       onPressed: () {
+                        pvdStore.saveData();
+                        Provider.of<Store>(context, listen: false)
+                            .storedThemes
+                            .last
+                            .setTime();
                         Navigator.pop(context);
                       },
                       child: const Text(
