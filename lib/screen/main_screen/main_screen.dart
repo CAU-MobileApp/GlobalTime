@@ -205,6 +205,16 @@ class _MainScreenState extends State<MainScreen> {
                                                             listen: false)
                                                         .storedThemes[index]);
 
+
+                                                print('hOffest ${Provider.of<Store>(context,
+                                                    listen: false)
+                                                    .storedThemes[index].hoursAngle}');
+                                                print('mOffset ${Provider.of<Store>(context,
+                                                    listen: false)
+                                                    .storedThemes[index].minutesAngle}');
+                                                print('hOffest ${themeBeforeEdited.minuteOffset}');
+                                                print('mOffset ${themeBeforeEdited.hourOffset}');
+
                                                 //custom페이지에서 위 정보를 access 및 관리하기 위해 Store class에 별도로 저장
                                                 Provider.of<Store>(context,
                                                         listen: false)
