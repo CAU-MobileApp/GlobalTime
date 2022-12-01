@@ -195,9 +195,9 @@ class StoreTheme extends ChangeNotifier {
   }
 
   void setTime() {
-    timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+    timer = Timer.periodic(Duration(milliseconds: 10), (timer) async {
       var now = DateTime.now();
-      var local = now.timeZoneOffset.toString().split(':');
+      var local = await now.timeZoneOffset.toString().split(':');
       now = now.add(Duration(
           hours: int.parse(hourOffset) - int.parse(local[0]),
           minutes: int.parse(minuteOffset) - int.parse(local[1])));
