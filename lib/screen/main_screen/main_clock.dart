@@ -62,14 +62,11 @@ class _MainClockState extends State<MainClock> {
               pvdStore.storedThemes.isEmpty
                   ? Text(
                       'Seoul  ${pvdStoreTheme.dateTime}',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontFamily: 'main2'),
-                    )
+                      style: const TextStyle(fontFamily: 'main', color: Colors.white, fontSize: 18),
                   : Text(
                       '${pvdStore.storedThemes[0].country}   ${pvdStore.storedThemes[0].dateTime}',
                       style: TextStyle(
+                          fontFamily: 'main',
                           color: pvdStore.storedThemes[0].textColor,
                           fontSize: 18),
                     ),
