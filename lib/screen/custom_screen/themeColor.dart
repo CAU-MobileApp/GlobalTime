@@ -22,7 +22,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
           alignment: Alignment(0.0, 1),
           child: Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.21,
+              height: MediaQuery.of(context).size.height * 0.24,
               decoration: BoxDecoration(color: Colors.white),
               child: Row(
                 children: [
