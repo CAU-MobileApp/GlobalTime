@@ -20,7 +20,7 @@ class Clock extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-              children: List.generate(7, (index) {
+              children: List.generate(9, (index) {
             return GestureDetector(
               key: ValueKey(index),
               onTap: () {
