@@ -175,15 +175,10 @@ class StoreTheme extends ChangeNotifier {
     Response response =
         await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
     Map data = jsonDecode(response.body);
-    print(data);
     hourOffset = data['utc_offset'].substring(1, 3);
     minuteOffset = data['utc_offset'].substring(4, 6);
     var now = DateTime.now();
     local = now.timeZoneOffset.toString().split(':');
-
-    print('hi $hourOffset');
-    print('hi $minuteOffset');
-
     notifyListeners();
   }
 
@@ -266,6 +261,7 @@ class StoreTheme extends ChangeNotifier {
     imageFile = theme.imageFile;
     hourOffset = theme.hourOffset;
     minuteOffset = theme.minuteOffset;
+    dateTime = theme.dateTime;
     notifyListeners();
   }
 }

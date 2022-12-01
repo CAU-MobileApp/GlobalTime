@@ -96,15 +96,8 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                       if (pvdStoreTemp.index != -1) {
 
                         pvdStoreTemp.updateRollBackAngle(pvdStoreTemp.storedThemes[pvdStoreTemp.index]);
-                        // pvdStoreTemp.themeBeforeEdited.hoursAngle =
-                        //     pvdStoreTemp.storedThemes[pvdStoreTemp.index].hoursAngle;
-                        // pvdStoreTemp.themeBeforeEdited.minutesAngle =
-                        //     pvdStoreTemp.storedThemes[pvdStoreTemp.index].minutesAngle;
-                        // pvdStoreTemp.themeBeforeEdited.secondsAngle =
-                        //     pvdStoreTemp.storedThemes[pvdStoreTemp.index].secondsAngle;
                         pvdStoreTemp.storedThemes[pvdStoreTemp.index] =
                             pvdStoreTemp.themeBeforeEdited;
-
                         pvdStoreTemp.storedThemes[pvdStoreTemp.index].setTime();
                       }
                       Navigator.pop(context); //뒤로가기
