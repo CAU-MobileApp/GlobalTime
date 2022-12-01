@@ -69,12 +69,16 @@ class GalleryImage extends StatelessWidget {
     }
 
     return Align(
-      alignment: Alignment(0.9, 0.6),
+      alignment: Alignment(0.9, 0.63),
       child: FloatingActionButton(
         onPressed: () {
           getImage();
         },
-        child: Icon(Icons.wallpaper),
+        backgroundColor: const Color(0xFF222324),
+        child: const Icon(
+            Icons.wallpaper,
+          color: Colors.white,
+        ),
       ),
     );
   }

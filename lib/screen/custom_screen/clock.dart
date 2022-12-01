@@ -12,7 +12,7 @@ class Clock extends StatelessWidget {
     Store pvdStore = Provider.of<Store>(context, listen: true);
     StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     return Align(
-      alignment: Alignment(0.0, 0.9),
+      alignment: Alignment(0.0, 1.0),
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * 0.1,
@@ -20,7 +20,7 @@ class Clock extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-              children: List.generate(5, (index) {
+              children: List.generate(7, (index) {
             return GestureDetector(
               key: ValueKey(index),
               onTap: () {

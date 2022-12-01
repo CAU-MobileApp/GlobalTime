@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.white, Colors.grey],
+              colors: [Colors.white, Color(0xFFdaeaf0)],
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter),
         ),
@@ -69,7 +69,7 @@ class _MainScreenState extends State<MainScreen> {
                         }));
                       },
                       backgroundColor: Color(0xFF222324),
-                      // backgroundColor: Colors.grey,
+                      // backgroundColor: Colors.red,
                       elevation: 3,
                       child: const Icon(Icons.add),
                     ),
