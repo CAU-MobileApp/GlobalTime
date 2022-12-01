@@ -29,6 +29,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
   Future<bool> _onBackKey() async {
     var pvdStoreTemp = Provider.of<Store>(context, listen: false);
     if (pvdStoreTemp.index != -1) {
+      pvdStoreTemp.updateRollBackAngle(pvdStoreTemp.storedThemes[pvdStoreTemp.index]);
       pvdStoreTemp.storedThemes[pvdStoreTemp.index] =
           pvdStoreTemp.themeBeforeEdited;
       pvdStoreTemp.storedThemes[pvdStoreTemp.index].setTime();
@@ -93,6 +94,8 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                       // storedThemes[index]의 기존 데이터였던 themeBeforeEdited 내용으로
                       // StoreTheme 및 storedThemes[index] 복구
                       if (pvdStoreTemp.index != -1) {
+
+                        pvdStoreTemp.updateRollBackAngle(pvdStoreTemp.storedThemes[pvdStoreTemp.index]);
                         pvdStoreTemp.storedThemes[pvdStoreTemp.index] =
                             pvdStoreTemp.themeBeforeEdited;
                         pvdStoreTemp.storedThemes[pvdStoreTemp.index].setTime();
