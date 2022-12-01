@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:world_time/components/store.dart';
-import 'package:provider/provider.dart';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:world_time/components/store.dart';
 
 class MainClock extends StatefulWidget {
   const MainClock({
@@ -55,14 +56,13 @@ class _MainClockState extends State<MainClock> {
             fit: BoxFit.cover),
       ),
       child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+          padding: const EdgeInsets.fromLTRB(20, 20, 15, 15),
           child: Stack(
             children: [
               pvdStore.storedThemes.isEmpty
                   ? Text(
                       'Seoul  ${pvdStoreTheme.dateTime}',
                       style: const TextStyle(fontFamily: 'main', color: Colors.white, fontSize: 18),
-                    )
                   : Text(
                       '${pvdStore.storedThemes[0].country}   ${pvdStore.storedThemes[0].dateTime}',
                       style: TextStyle(

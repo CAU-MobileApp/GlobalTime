@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:world_time/components/store.dart';
-import 'package:world_time/screen/clock_screen/clock_screen.dart';
-import 'package:provider/provider.dart';
-import 'package:world_time/screen/custom_screen/custom_screen.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:world_time/components/store.dart';
+import 'package:world_time/screen/clock_screen/clock_screen.dart';
+import 'package:world_time/screen/custom_screen/custom_screen.dart';
 import 'package:world_time/screen/main_screen/main_clock.dart';
 
 class MainScreen extends StatefulWidget {
@@ -35,10 +35,9 @@ class _MainScreenState extends State<MainScreen> {
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter),
         ),
-        // color: Colors.tealAccent,
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(40, 55, 20, 10),
+            padding: const EdgeInsets.fromLTRB(40, 60, 40, 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -69,24 +68,19 @@ class _MainScreenState extends State<MainScreen> {
                         }));
                       },
                       backgroundColor: Color(0xFF222324),
-                      // backgroundColor: Colors.red,
                       elevation: 3,
                       child: const Icon(Icons.add),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 20, 10, 0),
-                      child: Row(
-                        children: [
-                          FloatingActionButton.small(
-                            heroTag: "clearButton",
-                            backgroundColor: Color(0xFF222324),
-                            onPressed: () {
-                              pvdStore.removeData();
-                              pvdStore.deleteAll();
-                            },
-                            child: Icon(Icons.refresh),
-                          ),
-                        ],
+                      padding: const EdgeInsets.fromLTRB(8, 18, 0, 0),
+                      child: FloatingActionButton.small(
+                        heroTag: "clearButton",
+                        backgroundColor: Color(0xFF222324),
+                        onPressed: () {
+                          pvdStore.removeData();
+                          pvdStore.deleteAll();
+                        },
+                        child: Icon(Icons.refresh),
                       ),
                     ),
                   ],
@@ -158,7 +152,7 @@ class _MainScreenState extends State<MainScreen> {
                                       child: Card(
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(20.0)),
+                                                BorderRadius.circular(15.0)),
                                         margin: const EdgeInsets.symmetric(
                                             horizontal: 0, vertical: 0),
                                         color: Colors.black26,

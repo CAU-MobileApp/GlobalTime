@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ThemeColor extends StatefulWidget {
   ThemeColor({
@@ -22,7 +22,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
           alignment: Alignment(0.0, 1),
           child: Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.25,
+              height: MediaQuery.of(context).size.height * 0.21,
               decoration: BoxDecoration(color: Colors.white),
               child: Row(
                 children: [
@@ -51,12 +51,16 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                               Text(
                                 'Text',
                                 style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w600),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                               Text(
                                 'Clock',
                                 style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.w600),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
@@ -74,7 +78,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                               : pvdStore.storedThemes[pvdStore.index].textColor,
                           enableAlpha: false,
                           colorModel: ColorModel.rgb,
-                          indicatorSize: const Size(200, 15),
+                          indicatorSize: const Size(200, 5),
                           onColorChanged: (color) {
                             pvdStore.index == -1
                                 ? pvdStoreTheme.setTextColor(color)
@@ -89,7 +93,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                                   .storedThemes[pvdStore.index].clockColor,
                           enableAlpha: false,
                           colorModel: ColorModel.rgb,
-                          indicatorSize: const Size(200, 15),
+                          indicatorSize: const Size(200, 5),
                           onColorChanged: (color) {
                             pvdStore.index == -1
                                 ? pvdStoreTheme.setClockColor(color)

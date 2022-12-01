@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
 import 'package:world_time/screen/custom_screen/background.dart';
 import 'package:world_time/screen/custom_screen/clock.dart';
 import 'package:world_time/screen/custom_screen/country.dart';
 import 'package:world_time/screen/custom_screen/galleryImage.dart';
-import 'package:world_time/screen/custom_screen/themeColor.dart';
 import 'package:world_time/screen/custom_screen/sample_screen.dart';
-import 'package:flutter/services.dart';
+import 'package:world_time/screen/custom_screen/themeColor.dart';
 
 class CustomizeScreen extends StatefulWidget {
   const CustomizeScreen({Key? key}) : super(key: key);
@@ -138,7 +138,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
           ),
         ),
         bottomNavigationBar: Container(
-          height: 70,
+          height: 65,
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: Color(0xffedeff2),
