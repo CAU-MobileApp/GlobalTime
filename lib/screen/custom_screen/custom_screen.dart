@@ -64,7 +64,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
                         theme.minuteOffset = pvdStoreTheme.minuteOffset;
                         Provider.of<Store>(context, listen: false)
                             .getTheme(theme);
-                        pvdStore.saveData();
+                        Provider.of<Store>(context, listen: false).saveData();
                         Provider.of<Store>(context, listen: false)
                             .storedThemes
                             .last

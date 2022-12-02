@@ -24,13 +24,13 @@ class GalleryImage extends StatelessWidget {
           compressQuality: 100,
           uiSettings: [
             AndroidUiSettings(
-                toolbarTitle: 'Cropper',
-                toolbarColor: Colors.deepOrange,
+                toolbarTitle: 'Image Edit',
+                toolbarColor: Colors.black26,
                 toolbarWidgetColor: Colors.white,
-                initAspectRatio: CropAspectRatioPreset.ratio16x9,
+                initAspectRatio: CropAspectRatioPreset.original,
                 lockAspectRatio: false),
             IOSUiSettings(
-              title: 'Cropper',
+              title: 'Image Edit',
             ),
             WebUiSettings(
               context: context,
