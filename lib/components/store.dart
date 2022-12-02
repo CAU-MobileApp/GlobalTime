@@ -17,6 +17,13 @@ class Store extends ChangeNotifier {
   final List<String> localData = List.empty(growable: true);
   late StoreTheme themeBeforeEdited;
 
+  void updateRollBackAngle(StoreTheme st){
+    themeBeforeEdited.hoursAngle = st.hoursAngle;
+    themeBeforeEdited.minutesAngle = st.minutesAngle;
+    themeBeforeEdited.secondsAngle = st.secondsAngle;
+    notifyListeners();
+  }
+
   void saveTheme(StoreTheme theme) {
     themeBeforeEdited = theme;
     notifyListeners();
@@ -254,6 +261,7 @@ class StoreTheme extends ChangeNotifier {
     imageFile = theme.imageFile;
     hourOffset = theme.hourOffset;
     minuteOffset = theme.minuteOffset;
+    dateTime = theme.dateTime;
     notifyListeners();
   }
 }
