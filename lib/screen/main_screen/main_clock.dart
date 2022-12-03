@@ -19,6 +19,7 @@ class _MainClockState extends State<MainClock> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    context.watch<StoreTheme>().setTime();
     if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty &&
         check == false) {
       check = true;
@@ -60,9 +61,11 @@ class _MainClockState extends State<MainClock> {
           child: Stack(
             children: [
               pvdStore.storedThemes.isEmpty
-                  ? Text(
-                      'Seoul  ${pvdStoreTheme.dateTime}',
-                      style: const TextStyle(fontFamily: 'main', color: Colors.white, fontSize: 18))
+                  ? Text('Seoul  ${pvdStoreTheme.dateTime}',
+                      style: const TextStyle(
+                          fontFamily: 'main',
+                          color: Colors.white,
+                          fontSize: 18))
                   : Text(
                       '${pvdStore.storedThemes[0].country}   ${pvdStore.storedThemes[0].dateTime}',
                       style: TextStyle(

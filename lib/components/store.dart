@@ -10,6 +10,7 @@ class Store extends ChangeNotifier {
   String countryParsed = 'Seoul';
   String country = 'Asia/Seoul';
   int index = 0;
+  bool receiveData = false;
 
   Map countryDict = {};
   final List<String> countryListParsed = List.empty(growable: true);
@@ -50,6 +51,7 @@ class Store extends ChangeNotifier {
         storedThemes[count++].setTime();
       }
     }
+    receiveData = true;
     notifyListeners();
   }
 

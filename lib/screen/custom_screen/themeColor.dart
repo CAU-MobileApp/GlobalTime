@@ -38,7 +38,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                       child: Align(
                         alignment: Alignment.center,
                         child: Padding(
-                          padding: const EdgeInsets.all(5.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: TabBar(
                             labelColor: Colors.black,
                             unselectedLabelColor: Colors.grey,
