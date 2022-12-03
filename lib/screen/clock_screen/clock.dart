@@ -10,22 +10,14 @@ class ClockWidget extends StatefulWidget {
 
 class _ClockWidgetState extends State<ClockWidget> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     Provider.of<Store>(context, listen: true)
         .storedThemes[Provider.of<Store>(context, listen: true).index]
         .setTime();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    Provider.of<Store>(context, listen: true)
+        .storedThemes[Provider.of<Store>(context, listen: true).index]
+        .timerCancel();
   }
 
   @override

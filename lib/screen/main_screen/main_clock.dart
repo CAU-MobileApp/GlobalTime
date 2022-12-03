@@ -32,8 +32,10 @@ class _MainClockState extends State<MainClock> {
     }
     if (check == true) {
       Provider.of<Store>(context, listen: true).storedThemes[0].setTime();
+      Provider.of<Store>(context, listen: true).storedThemes[0].timerCancel();
     } else {
       Provider.of<StoreTheme>(context, listen: true).setTime();
+      Provider.of<StoreTheme>(context, listen: true).timerCancel();
     }
   }
 

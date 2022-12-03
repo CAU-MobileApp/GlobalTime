@@ -13,17 +13,17 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.watch<Store>().index == -1
-        ? context.watch<StoreTheme>().setTime()
-        : context
-            .watch<Store>()
-            .storedThemes[context.watch<Store>().index]
-            .setTime();
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
+    Provider.of<Store>(context, listen: true).index == -1
+        ? Provider.of<StoreTheme>(context, listen: true).setTime()
+        : Provider.of<Store>(context, listen: true)
+            .storedThemes[Provider.of<Store>(context, listen: false).index]
+            .setTime();
+    Provider.of<Store>(context, listen: true).index == -1
+        ? Provider.of<StoreTheme>(context, listen: true).timerCancel()
+        : Provider.of<Store>(context, listen: true)
+            .storedThemes[Provider.of<Store>(context, listen: false).index]
+            .timerCancel();
   }
 
   Widget build(BuildContext context) {
