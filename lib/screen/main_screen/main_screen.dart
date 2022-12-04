@@ -15,17 +15,18 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    Provider.of<Store>(context, listen: false).getCountryList().then((value) {
-      Provider.of<Store>(context, listen: false).getData();
-    }); //country list 전처리 (해당 widget의 페이지에서 갱신할 경우 업로드 속도가 유저의 요구보다 느릴까봐 여기 작성하였습니다)
-  }
-
+  bool getLocalData = false;
   @override
   Widget build(BuildContext context) {
+    if (!Provider.of<Store>(context, listen: false).receiveCountryData) {
+      Provider.of<Store>(context, listen: false).getCountryList();
+    }
+    if (Provider.of<Store>(context, listen: false).receiveCountryData &&
+        !getLocalData) {
+      getLocalData = true;
+      Provider.of<Store>(context, listen: false).getData();
+    }
+
     Store pvdStore = Provider.of<Store>(context, listen: true);
     StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     return Scaffold(
@@ -80,8 +81,11 @@ class _MainScreenState extends State<MainScreen> {
                               heroTag: "clearButton",
                               backgroundColor: Color(0xFF222324),
                               onPressed: () {
-                                pvdStore.removeData();
-                                pvdStore.deleteAll();
+                                pvdStore.removeData().then((value) {
+                                  pvdStore.deleteAll();
+                                  Provider.of<Store>(context, listen: false)
+                                      .mainTimerInitiate();
+                                });
                               },
                               child: Icon(Icons.refresh),
                             ),
@@ -111,6 +115,8 @@ class _MainScreenState extends State<MainScreen> {
                                 key: ValueKey(pvdStore.storedThemes[index]),
                                 onDismissed: (direction) {
                                   pvdStore.deleteTheme(index);
+                                  Provider.of<Store>(context, listen: false)
+                                      .mainTimerInitiate();
                                 },
                                 child: GestureDetector(
                                   onTap: () {
@@ -218,7 +224,6 @@ class _MainScreenState extends State<MainScreen> {
                                                               listen: false)
                                                           .saveTheme(
                                                               themeBeforeEdited);
-
                                                       Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -245,6 +250,8 @@ class _MainScreenState extends State<MainScreen> {
                               }
                               Provider.of<Store>(context, listen: false)
                                   .reOrder(oldIndex, newIndex);
+                              Provider.of<Store>(context, listen: false)
+                                  .mainTimerInitiate();
                               pvdStore.saveData();
                             },
                           ),

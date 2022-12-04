@@ -10,7 +10,11 @@ class Store extends ChangeNotifier {
   String countryParsed = 'Seoul';
   String country = 'Asia/Seoul';
   int index = 0;
+  bool initiatedMainTimer = false;
+  bool initiatedCustomizeTimer = false;
+  bool initiatedClockTimer = false;
   bool receiveData = false;
+  bool receiveCountryData = false;
 
   Map countryDict = {};
   final List<String> countryListParsed = List.empty(growable: true);
@@ -27,6 +31,21 @@ class Store extends ChangeNotifier {
 
   void saveTheme(StoreTheme theme) {
     themeBeforeEdited = theme;
+    notifyListeners();
+  }
+
+  void mainTimerInitiate() {
+    initiatedMainTimer = !initiatedMainTimer;
+    notifyListeners();
+  }
+
+  void customizeTimerInitiate() {
+    initiatedCustomizeTimer = !initiatedCustomizeTimer;
+    notifyListeners();
+  }
+
+  void clockTimerInitiate() {
+    initiatedClockTimer = !initiatedClockTimer;
     notifyListeners();
   }
 
@@ -67,7 +86,7 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-  removeData() async {
+  Future<void> removeData() async {
     var storage = await SharedPreferences.getInstance();
     storage.remove('themeData');
     notifyListeners();
@@ -124,6 +143,7 @@ class Store extends ChangeNotifier {
       }
     }
     countryListParsed.sort();
+    receiveCountryData = true;
     notifyListeners();
   }
 
@@ -196,21 +216,36 @@ class StoreTheme extends ChangeNotifier {
     });
   }
 
-  void setTime() {
-    timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      var now = DateTime.now();
-      var local = now.timeZoneOffset.toString().split(':');
-      now = now.add(Duration(
-          hours: int.parse(hourOffset) - int.parse(local[0]),
-          minutes: int.parse(minuteOffset) - int.parse(local[1])));
-      dateTime =
-          '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
-      secondsAngle = (pi / 30) * now.second;
-      minutesAngle = (pi / 30) * now.minute;
-      hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
-      notifyListeners();
-    });
+  void updateSecondsAngle(updated) {
+    secondsAngle = updated;
+    notifyListeners();
   }
+
+  void updateMinutesAngle(updated) {
+    minutesAngle = updated;
+    notifyListeners();
+  }
+
+  void updateHoursAngle(updated) {
+    hoursAngle = updated;
+    notifyListeners();
+  }
+
+  // void setTime() {
+  //   timer = Timer.periodic(Duration(milliseconds: 20), (timer) {
+  //     var now = DateTime.now();
+  //     var local = now.timeZoneOffset.toString().split(':');
+  //     now = now.add(Duration(
+  //         hours: int.parse(hourOffset) - int.parse(local[0]),
+  //         minutes: int.parse(minuteOffset) - int.parse(local[1])));
+  //     dateTime =
+  //         '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
+  //     secondsAngle = (pi / 30) * now.second;
+  //     minutesAngle = (pi / 30) * now.minute;
+  //     hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
+  //     notifyListeners();
+  //   });
+  // }
 
   void timerCancel() {
     timer.cancel();

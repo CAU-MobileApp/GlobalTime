@@ -93,13 +93,19 @@ class _CountryState extends State<Country> {
                 pvdStore.setCountry(value); //새로 선택된 지역 정보로 text를 갱신
 
                 if (pvdStore.index == -1) {
-                  pvdStoreTheme.getTime(pvdStore.country);
-                  pvdStoreTheme.country = value;
+                  pvdStoreTheme.getTime(pvdStore.country).then((_) {
+                    pvdStoreTheme.country = value;
+                    pvdStore.customizeTimerInitiate();
+                  });
                 } else {
                   pvdStore.storedThemes[pvdStore.index]
-                      .getTime(pvdStore.country);
-                  pvdStore.storedThemes[pvdStore.index].country = value;
+                      .getTime(pvdStore.country)
+                      .then((_) {
+                    pvdStore.storedThemes[pvdStore.index].country = value;
+                    pvdStore.customizeTimerInitiate();
+                  });
                 }
+
                 _searchController.text = '';
               } else {
                 _searchController.text = '';

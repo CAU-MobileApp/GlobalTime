@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'dart:io';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
@@ -14,12 +15,50 @@ class MainClock extends StatefulWidget {
 }
 
 class _MainClockState extends State<MainClock> {
+  Timer? timer;
   bool check = true;
+  double secondsAngle = 0;
+  double minutesAngle = 0;
+  double hoursAngle = 0;
+  String dateTime = '';
+
+  void setTime(hourOffset, minuteOffset) {
+    timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+      var now = DateTime.now();
+      var local = now.timeZoneOffset.toString().split(':');
+      now = now.add(Duration(
+          hours: int.parse(hourOffset) - int.parse(local[0]),
+          minutes: int.parse(minuteOffset) - int.parse(local[1])));
+      setState(() {
+        dateTime =
+            '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
+        secondsAngle = (pi / 30) * now.second;
+        minutesAngle = (pi / 30) * now.minute;
+        hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
+      });
+    });
+  }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.watch<StoreTheme>().setTime();
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<Store>(context, listen: false).mainTimerInitiate();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Store pvdStore = Provider.of<Store>(context, listen: true);
+    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty &&
         check == false) {
       check = true;
@@ -30,19 +69,20 @@ class _MainClockState extends State<MainClock> {
       check = false;
       Provider.of<StoreTheme>(context, listen: true).getMainTime('Asia/Seoul');
     }
-    if (check == true) {
-      Provider.of<Store>(context, listen: true).storedThemes[0].setTime();
-      Provider.of<Store>(context, listen: true).storedThemes[0].timerCancel();
-    } else {
-      Provider.of<StoreTheme>(context, listen: true).setTime();
-      Provider.of<StoreTheme>(context, listen: true).timerCancel();
+    if (pvdStore.initiatedMainTimer) {
+      timer?.cancel();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        pvdStore.mainTimerInitiate();
+      });
+      if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty) {
+        print('뭐임1');
+        setTime(context.watch<Store>().storedThemes[0].hourOffset,
+            context.watch<Store>().storedThemes[0].minuteOffset);
+      } else {
+        print('뭐임2');
+        setTime('9', '0');
+      }
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Store pvdStore = Provider.of<Store>(context, listen: true);
-    StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     return Container(
       width: 300,
       height: 300,
@@ -63,13 +103,13 @@ class _MainClockState extends State<MainClock> {
           child: Stack(
             children: [
               pvdStore.storedThemes.isEmpty
-                  ? Text('Seoul  ${pvdStoreTheme.dateTime}',
+                  ? Text('Seoul  $dateTime',
                       style: const TextStyle(
                           fontFamily: 'main',
                           color: Colors.white,
                           fontSize: 18))
                   : Text(
-                      '${pvdStore.storedThemes[0].country}   ${pvdStore.storedThemes[0].dateTime}',
+                      '${pvdStore.storedThemes[0].country}   $dateTime',
                       style: TextStyle(
                           fontFamily: 'main',
                           color: pvdStore.storedThemes[0].textColor,
@@ -96,9 +136,7 @@ class _MainClockState extends State<MainClock> {
                       ),
                       // Seconds
                       Transform.rotate(
-                        angle: pvdStore.storedThemes.isEmpty
-                            ? pvdStoreTheme.secondsAngle
-                            : pvdStore.storedThemes[0].secondsAngle,
+                        angle: secondsAngle,
                         child: Container(
                           alignment: const Alignment(0, -0.75),
                           child: Container(
@@ -112,9 +150,7 @@ class _MainClockState extends State<MainClock> {
                       ),
                       // Minutes
                       Transform.rotate(
-                        angle: pvdStore.storedThemes.isEmpty
-                            ? pvdStoreTheme.minutesAngle
-                            : pvdStore.storedThemes[0].minutesAngle,
+                        angle: minutesAngle,
                         child: Container(
                           alignment: const Alignment(0, -0.4),
                           child: Container(
@@ -128,9 +164,7 @@ class _MainClockState extends State<MainClock> {
                       ),
                       // Hours
                       Transform.rotate(
-                        angle: pvdStore.storedThemes.isEmpty
-                            ? pvdStoreTheme.hoursAngle
-                            : pvdStore.storedThemes[0].hoursAngle,
+                        angle: hoursAngle,
                         child: Container(
                           alignment: const Alignment(0, -0.25),
                           child: Container(

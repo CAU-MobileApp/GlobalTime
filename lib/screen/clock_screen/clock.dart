@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
@@ -9,21 +12,65 @@ class ClockWidget extends StatefulWidget {
 }
 
 class _ClockWidgetState extends State<ClockWidget> {
+  Timer? timer;
+  bool check = true;
+  double secondsAngle = 0;
+  double minutesAngle = 0;
+  double hoursAngle = 0;
+  String dateTime = '';
+
+  void setTime(hourOffset, minuteOffset) {
+    timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+      var now = DateTime.now();
+      var local = now.timeZoneOffset.toString().split(':');
+      now = now.add(Duration(
+          hours: int.parse(hourOffset) - int.parse(local[0]),
+          minutes: int.parse(minuteOffset) - int.parse(local[1])));
+      setState(() {
+        dateTime =
+            '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
+        secondsAngle = (pi / 30) * now.second;
+        minutesAngle = (pi / 30) * now.minute;
+        hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
+      });
+    });
+  }
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    Provider.of<Store>(context, listen: true)
-        .storedThemes[Provider.of<Store>(context, listen: true).index]
-        .setTime();
-    Provider.of<Store>(context, listen: true)
-        .storedThemes[Provider.of<Store>(context, listen: true).index]
-        .timerCancel();
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<Store>(context, listen: false).clockTimerInitiate();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Store pvdStore = Provider.of<Store>(context, listen: true);
     StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
+    if (pvdStore.initiatedClockTimer) {
+      timer?.cancel();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        pvdStore.clockTimerInitiate();
+      });
+      setTime(
+          context
+              .watch<Store>()
+              .storedThemes[Provider.of<Store>(context, listen: true).index]
+              .hourOffset,
+          context
+              .watch<Store>()
+              .storedThemes[Provider.of<Store>(context, listen: true).index]
+              .minuteOffset);
+    }
     return Center(
       child: SingleChildScrollView(
         child: Column(
