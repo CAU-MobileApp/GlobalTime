@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
 
 class ThemeColor extends StatefulWidget {
-  ThemeColor({
+  const ThemeColor({
     Key? key,
   }) : super(key: key);
 
@@ -13,17 +13,18 @@ class ThemeColor extends StatefulWidget {
 }
 
 class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
+  @override
   Widget build(BuildContext context) {
     Store pvdStore = Provider.of<Store>(context, listen: true);
     StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     return DefaultTabController(
       length: 2,
       child: Align(
-          alignment: Alignment(0.0, 1),
+          alignment: const Alignment(0.0, 1),
           child: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.24,
-              decoration: BoxDecoration(color: Colors.white),
+              decoration: const BoxDecoration(color: Colors.white),
               child: Row(
                 children: [
                   Container(
@@ -70,7 +71,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                   ),
                   Flexible(
                     child: TabBarView(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         SlidePicker(
                           pickerColor: context.watch<Store>().index == -1

@@ -21,7 +21,7 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
   String dateTime = '';
 
   void setTime(hourOffset, minuteOffset) {
-    timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 1), (timer) {
       var now = DateTime.now();
       var local = now.timeZoneOffset.toString().split(':');
       now = now.add(Duration(
@@ -76,11 +76,11 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     Store pvdStore = Provider.of<Store>(context, listen: true);
     StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     if (pvdStore.initiatedCustomizeTimer) {
-      print('뭐임요');
       timer?.cancel();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         pvdStore.customizeTimerInitiate();
@@ -101,7 +101,7 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
       }
     }
     return check
-        ? Center()
+        ? const Center()
         : Center(
             child: SingleChildScrollView(
               child: Column(
@@ -174,6 +174,7 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                           Transform.rotate(
                             angle: secondsAngle,
                             child: Container(
+                              alignment: const Alignment(0, -0.45),
                               child: Container(
                                 height: 120,
                                 width: 2,
@@ -181,13 +182,13 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                                     color: Colors.black45,
                                     borderRadius: BorderRadius.circular(10)),
                               ),
-                              alignment: Alignment(0, -0.45),
                             ),
                           ),
                           // Minutes
                           Transform.rotate(
                             angle: minutesAngle,
                             child: Container(
+                              alignment: const Alignment(0, -0.4),
                               child: Container(
                                 height: 85,
                                 width: 4,
@@ -195,13 +196,13 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
                               ),
-                              alignment: Alignment(0, -0.4),
                             ),
                           ),
                           // Hours
                           Transform.rotate(
                             angle: hoursAngle,
                             child: Container(
+                              alignment: const Alignment(0, -0.25),
                               child: Container(
                                 height: 65,
                                 width: 3,
@@ -209,11 +210,11 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                                     color: Colors.red,
                                     borderRadius: BorderRadius.circular(10)),
                               ),
-                              alignment: Alignment(0, -0.25),
                             ),
                           ),
                           // Dot
                           Container(
+                            alignment: const Alignment(0, 0),
                             child: Container(
                               height: 15,
                               width: 15,
@@ -221,7 +222,6 @@ class _SampleClockWidgetState extends State<SampleClockWidget> {
                                   color: Colors.black,
                                   borderRadius: BorderRadius.circular(50)),
                             ),
-                            alignment: Alignment(0, 0),
                           ),
                         ],
                       ),

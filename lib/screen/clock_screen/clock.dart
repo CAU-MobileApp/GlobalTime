@@ -123,7 +123,7 @@ class _ClockWidgetState extends State<ClockWidget> {
                   Transform.rotate(
                     angle: pvdStore.storedThemes[pvdStore.index].secondsAngle,
                     child: Container(
-                      alignment: Alignment(0, -0.45),
+                      alignment: const Alignment(0, -0.45),
                       child: Container(
                         height: 120,
                         width: 2,
@@ -136,7 +136,7 @@ class _ClockWidgetState extends State<ClockWidget> {
                   Transform.rotate(
                     angle: pvdStore.storedThemes[pvdStore.index].minutesAngle,
                     child: Container(
-                      alignment: Alignment(0, -0.4),
+                      alignment: const Alignment(0, -0.4),
                       child: Container(
                         height: 85,
                         width: 4,

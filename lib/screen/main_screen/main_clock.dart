@@ -23,7 +23,7 @@ class _MainClockState extends State<MainClock> {
   String dateTime = '';
 
   void setTime(hourOffset, minuteOffset) {
-    timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 1), (timer) {
       var now = DateTime.now();
       var local = now.timeZoneOffset.toString().split(':');
       now = now.add(Duration(
@@ -75,11 +75,9 @@ class _MainClockState extends State<MainClock> {
         pvdStore.mainTimerInitiate();
       });
       if (Provider.of<Store>(context, listen: false).storedThemes.isNotEmpty) {
-        print('뭐임1');
         setTime(context.watch<Store>().storedThemes[0].hourOffset,
             context.watch<Store>().storedThemes[0].minuteOffset);
       } else {
-        print('뭐임2');
         setTime('9', '0');
       }
     }
@@ -116,7 +114,7 @@ class _MainClockState extends State<MainClock> {
                           fontSize: 18),
                     ),
               Align(
-                alignment: Alignment(0.0, 1),
+                alignment: const Alignment(0.0, 1),
                 child: Container(
                   width: 225,
                   height: 225,

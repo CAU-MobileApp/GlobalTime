@@ -1,17 +1,11 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
 import 'package:world_time/components/store.dart';
-
 import 'package:provider/provider.dart';
 import 'package:world_time/screen/main_screen/main_screen.dart';
 
 void main() {
-  HttpOverrides.global = MyHttpOverrides();
-
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(
@@ -21,20 +15,14 @@ void main() {
         create: (c) => StoreTheme(),
       ),
     ],
-    child: MyApp(),
+    child: Phoenix(
+      child: const MyApp(),
+    ),
   ));
 }
 
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)..maxConnectionsPerHost = 5;
-  }
-}
-
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-  final seedColor = Color(0xffffffff);
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

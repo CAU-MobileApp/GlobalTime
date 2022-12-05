@@ -16,7 +16,7 @@ class _CountryState extends State<Country> {
   final _formKey = GlobalKey<FormState>();
   final _searchController = TextEditingController();
   final focus = FocusNode();
-  var _hint = "Search Country";
+  final _hint = "Search Country";
 
   @override
   void dispose() {

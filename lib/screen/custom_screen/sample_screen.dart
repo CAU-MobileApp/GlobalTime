@@ -32,7 +32,7 @@ class SampleScreen extends StatelessWidget {
                 fit: BoxFit.cover),
           ),
         ),
-        SampleClockWidget(),
+        const SampleClockWidget(),
       ],
     );
   }

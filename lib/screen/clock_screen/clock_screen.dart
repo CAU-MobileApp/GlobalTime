@@ -43,7 +43,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           fit: BoxFit.cover),
                     ),
                   ),
-                  ClockWidget()
+                  const ClockWidget()
                 ],
               )),
         ),

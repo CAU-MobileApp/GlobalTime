@@ -153,7 +153,7 @@ class _CustomizeScreenState extends State<CustomizeScreen> {
           height: 65,
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Color(0xffedeff2),
+            backgroundColor: const Color(0xffedeff2),
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.public),

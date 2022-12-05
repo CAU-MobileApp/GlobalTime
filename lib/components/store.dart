@@ -14,10 +14,8 @@ class Store extends ChangeNotifier {
   bool initiatedCustomizeTimer = false;
   bool initiatedClockTimer = false;
   bool receiveData = false;
-  bool receiveCountryData = false;
-
   Map countryDict = {};
-  final List<String> countryListParsed = List.empty(growable: true);
+  List<String> countryListParsed = List.empty(growable: true);
   final List<StoreTheme> storedThemes = List.empty(growable: true);
   final List<String> localData = List.empty(growable: true);
   late StoreTheme themeBeforeEdited;
@@ -26,6 +24,12 @@ class Store extends ChangeNotifier {
     themeBeforeEdited.hoursAngle = st.hoursAngle;
     themeBeforeEdited.minutesAngle = st.minutesAngle;
     themeBeforeEdited.secondsAngle = st.secondsAngle;
+    notifyListeners();
+  }
+
+  void setCountryData(getCountryDict, getCountryListParsed) {
+    countryDict = getCountryDict;
+    countryListParsed = getCountryListParsed;
     notifyListeners();
   }
 
@@ -49,29 +53,33 @@ class Store extends ChangeNotifier {
     notifyListeners();
   }
 
-  getData() async {
-    var storage = await SharedPreferences.getInstance();
-    var temp = storage.getStringList('themeData');
-    int count = 0;
-    print(temp);
-    if (temp != null) {
-      for (var element in temp) {
-        StoreTheme temp2 = StoreTheme();
-        var token = element.split(',');
-        temp2.clockTheme = token[0].trim();
-        temp2.backgroundTheme = token[1].trim();
-        temp2.country = token[2].trim();
-        temp2.textColor = Color(int.parse(token[3].substring(7, 17)));
-        temp2.clockColor = Color(int.parse(token[4].substring(7, 17)));
-        temp2.imageFile = token[5].trim();
-        temp2.hourOffset = token[6].trim();
-        temp2.minuteOffset = token[7].trim();
-        storedThemes.add(temp2);
-        storedThemes[count++].setTime();
+  Future<dynamic> getData() async {
+    if (receiveData == false) {
+      receiveData = true;
+      var storage = await SharedPreferences.getInstance();
+      var temp = storage.getStringList('themeData');
+      int count = 0;
+      print(temp);
+      if (temp != null) {
+        for (var element in temp) {
+          StoreTheme temp2 = StoreTheme();
+          var token = element.split(',');
+          temp2.clockTheme = token[0].trim();
+          temp2.backgroundTheme = token[1].trim();
+          temp2.country = token[2].trim();
+          temp2.textColor = Color(int.parse(token[3].substring(7, 17)));
+          temp2.clockColor = Color(int.parse(token[4].substring(7, 17)));
+          temp2.imageFile = token[5].trim();
+          temp2.hourOffset = token[6].trim();
+          temp2.minuteOffset = token[7].trim();
+          storedThemes.add(temp2);
+          storedThemes[count++].setTime();
+        }
       }
+      notifyListeners();
     }
-    receiveData = true;
-    notifyListeners();
+    await Future.delayed(const Duration(seconds: 1), () {});
+    return true;
   }
 
   saveData() async {
@@ -117,33 +125,6 @@ class Store extends ChangeNotifier {
 
   void deleteAll() {
     storedThemes.clear();
-    notifyListeners();
-  }
-
-  Future<void> getCountryList() async {
-    Response response =
-        await get(Uri.parse('http://worldtimeapi.org/api/timezone'));
-    var data = jsonDecode(response.body);
-    for (var i in data) {
-      //표준시간대는 제외 (대륙/지역과 같은 valid format만 남겨놓았습니다)
-      var token = i.toString().split("/");
-      if (token.length != 1) {
-        if (token[0] != "Etc") {
-          countryListParsed
-              .add(token[token.length - 1]); //대륙/지역 format의 "지역" 정보만을 저장합니다
-          String countryPrefix = "";
-          for (var j = 0; j < token.length - 1; j++) {
-            token[j] = "/${token[j]}";
-            countryPrefix += token[j];
-          }
-          countryPrefix += "/";
-          countryDict[token[token.length - 1]] =
-              countryPrefix; //대륙/지역 format의 "지역" 이전 부분 정보를 저장하기 위한 prefix입니다
-        }
-      }
-    }
-    countryListParsed.sort();
-    receiveCountryData = true;
     notifyListeners();
   }
 
@@ -231,21 +212,21 @@ class StoreTheme extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void setTime() {
-  //   timer = Timer.periodic(Duration(milliseconds: 20), (timer) {
-  //     var now = DateTime.now();
-  //     var local = now.timeZoneOffset.toString().split(':');
-  //     now = now.add(Duration(
-  //         hours: int.parse(hourOffset) - int.parse(local[0]),
-  //         minutes: int.parse(minuteOffset) - int.parse(local[1])));
-  //     dateTime =
-  //         '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
-  //     secondsAngle = (pi / 30) * now.second;
-  //     minutesAngle = (pi / 30) * now.minute;
-  //     hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
-  //     notifyListeners();
-  //   });
-  // }
+  void setTime() {
+    timer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
+      var now = DateTime.now();
+      var local = now.timeZoneOffset.toString().split(':');
+      now = now.add(Duration(
+          hours: int.parse(hourOffset) - int.parse(local[0]),
+          minutes: int.parse(minuteOffset) - int.parse(local[1])));
+      dateTime =
+          '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
+      secondsAngle = (pi / 30) * now.second;
+      minutesAngle = (pi / 30) * now.minute;
+      hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
+      notifyListeners();
+    });
+  }
 
   void timerCancel() {
     timer.cancel();

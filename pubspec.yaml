@@ -46,6 +46,8 @@ dependencies:
   image_cropper: ^3.0.1
   fluttertoast: ^8.0.7
   searchfield: ^0.7.2
+  flutter_phoenix: ^1.1.0
+  retry: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +76,7 @@ flutter:
     - assets/background/
     - assets/background/small/
     - assets/clock_layout/
+    - assets/splash/
 
 
   fonts:
