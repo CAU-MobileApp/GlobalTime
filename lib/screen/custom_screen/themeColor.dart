@@ -23,7 +23,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
           alignment: const Alignment(0.0, 1),
           child: Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.24,
+              height: MediaQuery.of(context).size.height * 0.18,
               decoration: const BoxDecoration(color: Colors.white),
               child: Row(
                 children: [
@@ -39,7 +39,7 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                       child: Align(
                         alignment: Alignment.center,
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: TabBar(
                             labelColor: Colors.black,
                             unselectedLabelColor: Colors.grey,
@@ -49,18 +49,24 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                                 borderRadius: BorderRadius.circular(40),
                                 color: Colors.black12),
                             tabs: const [
-                              Text(
-                                'Text',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: Text(
+                                  'Text',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
-                              Text(
-                                'Clock',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                child: Text(
+                                  'Clock',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
                             ],
@@ -77,30 +83,33 @@ class _ThemeColorState extends State<ThemeColor> with TickerProviderStateMixin {
                           pickerColor: context.watch<Store>().index == -1
                               ? pvdStoreTheme.textColor
                               : pvdStore.storedThemes[pvdStore.index].textColor,
-                          enableAlpha: false,
-                          colorModel: ColorModel.rgb,
-                          indicatorSize: const Size(200, 5),
                           onColorChanged: (color) {
                             pvdStore.index == -1
                                 ? pvdStoreTheme.setTextColor(color)
                                 : pvdStore.storedThemes[pvdStore.index]
                                     .setTextColor(color);
                           },
+                          enableAlpha: false,
+                          colorModel: ColorModel.rgb,
+                          indicatorSize: const Size(200, 15),
+                          showIndicator: false,
+                          sliderSize: const Size(250, 30),
                         ),
                         SlidePicker(
                           pickerColor: context.watch<Store>().index == -1
                               ? pvdStoreTheme.clockColor
                               : pvdStore
                                   .storedThemes[pvdStore.index].clockColor,
-                          enableAlpha: false,
-                          colorModel: ColorModel.rgb,
-                          indicatorSize: const Size(200, 5),
                           onColorChanged: (color) {
                             pvdStore.index == -1
                                 ? pvdStoreTheme.setClockColor(color)
                                 : pvdStore.storedThemes[pvdStore.index]
                                     .setClockColor(color);
                           },
+                          enableAlpha: false,
+                          colorModel: ColorModel.rgb,
+                          showIndicator: false,
+                          sliderSize: const Size(250, 30),
                         ),
                       ],
                     ),

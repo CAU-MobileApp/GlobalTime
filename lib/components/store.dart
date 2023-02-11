@@ -16,9 +16,14 @@ class Store extends ChangeNotifier {
   bool receiveData = false;
   Map countryDict = {};
   List<String> countryListParsed = List.empty(growable: true);
-  final List<StoreTheme> storedThemes = List.empty(growable: true);
+  List<StoreTheme> storedThemes = List.empty(growable: true);
   final List<String> localData = List.empty(growable: true);
   late StoreTheme themeBeforeEdited;
+
+  void setTheme(listTheme) {
+    storedThemes = listTheme;
+    notifyListeners();
+  }
 
   void updateRollBackAngle(StoreTheme st) {
     themeBeforeEdited.hoursAngle = st.hoursAngle;
@@ -147,7 +152,7 @@ class Store extends ChangeNotifier {
 }
 
 class StoreTheme extends ChangeNotifier {
-  String clockTheme = './assets/clock_layout/clock0.png';
+  String clockTheme = 'assets/clock_layout/clock0.png';
   String backgroundTheme = 'assets/background/background0.jpg';
   String country = 'Seoul';
   Color textColor = Colors.white;
@@ -159,6 +164,8 @@ class StoreTheme extends ChangeNotifier {
   String hourOffset = '9';
   String minuteOffset = '0';
   String imageFile = '';
+  // List<String> days = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  // int dayOfWeek = 0;
   var local;
   late Timer timer;
 
@@ -178,23 +185,20 @@ class StoreTheme extends ChangeNotifier {
     Response response =
         await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'));
     Map data = jsonDecode(response.body);
-    hourOffset = data['utc_offset'].substring(1, 3);
+    hourOffset = data['utc_offset'].substring(0, 3);
     minuteOffset = data['utc_offset'].substring(4, 6);
+    print(minuteOffset);
     var now = DateTime.now();
     local = now.timeZoneOffset.toString().split(':');
     notifyListeners();
   }
 
-  Future<void> getMainTime(country) async {
-    await get(Uri.parse('http://worldtimeapi.org/api/timezone/$country'))
-        .then((value) {
-      Map data = jsonDecode(value.body);
-      hourOffset = data['utc_offset'].substring(1, 3);
-      minuteOffset = data['utc_offset'].substring(4, 6);
-      var now = DateTime.now();
-      local = now.timeZoneOffset.toString().split(':');
-      setTime();
-    });
+  getMainTime() {
+    hourOffset = '9';
+    minuteOffset = '0';
+    var now = DateTime.now();
+    local = now.timeZoneOffset.toString().split(':');
+    setTime();
   }
 
   void updateSecondsAngle(updated) {
@@ -221,6 +225,23 @@ class StoreTheme extends ChangeNotifier {
           minutes: int.parse(minuteOffset) - int.parse(local[1])));
       dateTime =
           '${now.year.toString()}.${now.month.toString()}.${now.day.toString()}';
+      // if (now.month == 4 || now.month == 7) {
+      //   dayOfWeek = 0;
+      // } else if (now.month == 1 || now.month == 10) {
+      //   dayOfWeek = 1;
+      // } else if (now.month == 5) {
+      //   dayOfWeek = 2;
+      // } else if (now.month == 8) {
+      //   dayOfWeek = 3;
+      // } else if (now.month == 2 || now.month == 3 || now.month == 11) {
+      //   dayOfWeek = 4;
+      // } else if (now.month == 6) {
+      //   dayOfWeek = 5;
+      // } else if (now.month == 9 || now.month == 12) {
+      //   dayOfWeek = 6;
+      // }
+      // dayOfWeek += now.year % 4 == 0 && now.year % 100 != 0 || now.year % 400 == 0 ? 3 : 2;
+      // dayOfWeek = (dayOfWeek + now.day) % 7;
       secondsAngle = (pi / 30) * now.second;
       minutesAngle = (pi / 30) * now.minute;
       hoursAngle = (pi / 6) * (now.hour) + (pi / 45 * minutesAngle);
@@ -248,9 +269,8 @@ class StoreTheme extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setClock(idx) {
-    clockTheme = './assets/clock_layout/clock$idx.png';
-    notifyListeners();
+  void setClock(index) {
+    clockTheme = 'assets/clock_layout/clock$index.png';
   }
 
   void setTextColor(color) {
@@ -264,7 +284,7 @@ class StoreTheme extends ChangeNotifier {
   }
 
   void clearTheme() {
-    clockTheme = './assets/clock_layout/clock0.png';
+    clockTheme = 'assets/clock_layout/clock0.png';
     backgroundTheme = 'assets/background/background0.jpg';
     country = 'Seoul';
     textColor = Colors.white;

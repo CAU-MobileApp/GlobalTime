@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
+import 'package:world_time/precache.dart';
 import 'package:world_time/screen/custom_screen/background.dart';
 import 'package:world_time/screen/custom_screen/clock.dart';
 import 'package:world_time/screen/custom_screen/country.dart';

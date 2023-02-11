@@ -15,35 +15,25 @@ class GalleryImage extends StatelessWidget {
     Store pvdStore = Provider.of<Store>(context, listen: true);
     StoreTheme pvdStoreTheme = Provider.of<StoreTheme>(context, listen: true);
     Future<void> cropImage() async {
-      print(pickedFile);
       if (pickedFile != '') {
         final croppedFile = await ImageCropper().cropImage(
           sourcePath: pickedFile,
-          aspectRatio: const CropAspectRatio(ratioX: 9, ratioY: 16),
           compressFormat: ImageCompressFormat.jpg,
+          aspectRatio: CropAspectRatio(
+              ratioX: MediaQuery.of(context).size.width,
+              ratioY: MediaQuery.of(context).size.height),
           compressQuality: 100,
           uiSettings: [
             AndroidUiSettings(
-                toolbarTitle: 'Cropper',
-                toolbarColor: Colors.deepOrange,
+                toolbarTitle: 'Image Edit',
+                toolbarColor: Colors.black87,
                 toolbarWidgetColor: Colors.white,
-                initAspectRatio: CropAspectRatioPreset.ratio16x9,
                 lockAspectRatio: false),
             IOSUiSettings(
-              title: 'Cropper',
+              title: 'Image Edit',
             ),
             WebUiSettings(
               context: context,
-              presentStyle: CropperPresentStyle.dialog,
-              boundary: const CroppieBoundary(
-                width: 520,
-                height: 520,
-              ),
-              viewPort: const CroppieViewPort(
-                  width: 480, height: 480, type: 'circle'),
-              enableExif: true,
-              enableZoom: true,
-              showZoomer: true,
             ),
           ],
         );

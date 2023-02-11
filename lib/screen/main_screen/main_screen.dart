@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:world_time/components/store.dart';
+import 'package:world_time/precache.dart';
 import 'package:world_time/screen/clock_screen/clock_screen.dart';
 import 'package:world_time/screen/custom_screen/custom_screen.dart';
 import 'package:world_time/screen/main_screen/main_clock.dart';
@@ -22,7 +23,40 @@ class _MainScreenState extends State<MainScreen> {
   Response? response;
   Future<dynamic>? countryData;
   Map countryDict = {};
+  SharedPreferences? storage;
   final List<String> countryListParsed = List.empty(growable: true);
+  final List<StoreTheme> storedThemes = List.empty(growable: true);
+  bool receiveData = false;
+
+  Future<dynamic> getData() async {
+    if (receiveData == false) {
+      storage = await SharedPreferences.getInstance();
+      receiveData = true;
+      return receiveData;
+    }
+  }
+
+  void setData(storage) {
+    int count = 0;
+    var temp = storage.getStringList('themeData');
+    print(temp);
+    if (temp != null) {
+      for (var element in temp) {
+        StoreTheme temp2 = StoreTheme();
+        var token = element.split(',');
+        temp2.clockTheme = token[0].trim();
+        temp2.backgroundTheme = token[1].trim();
+        temp2.country = token[2].trim();
+        temp2.textColor = Color(int.parse(token[3].substring(7, 17)));
+        temp2.clockColor = Color(int.parse(token[4].substring(7, 17)));
+        temp2.imageFile = token[5].trim();
+        temp2.hourOffset = token[6].trim();
+        temp2.minuteOffset = token[7].trim();
+        storedThemes.add(temp2);
+        storedThemes[count++].setTime();
+      }
+    }
+  }
 
   Future<dynamic> getCountryList() async {
     response = await get(Uri.parse('http://worldtimeapi.org/api/timezone'));
@@ -52,15 +86,20 @@ class _MainScreenState extends State<MainScreen> {
     countryListParsed.sort();
   }
 
+  Future<dynamic> getPrecacheImage() async {
+    await Future.forEach(images, (image) => precacheImage(image, context));
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: FutureBuilder(
       future: getCountryList(),
       builder: (context, snapshot) {
-        Timer(const Duration(milliseconds: 250), () {
+        Timer(const Duration(milliseconds: 350), () {
           if (response == null) {
-            return Phoenix.rebirth(context);
+            Phoenix.rebirth(context);
           }
         });
         if (response == null) {
@@ -73,15 +112,15 @@ class _MainScreenState extends State<MainScreen> {
               ));
         }
 
-        sortCountry(snapshot.data);
+        sortCountry(response);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Provider.of<Store>(context, listen: false)
               .setCountryData(countryDict, countryListParsed);
         });
         return FutureBuilder(
-            future: Provider.of<Store>(context, listen: false).getData(),
+            future: getData(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
+              if (!receiveData) {
                 return SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
@@ -90,7 +129,11 @@ class _MainScreenState extends State<MainScreen> {
                       fit: BoxFit.cover,
                     ));
               }
-
+              setData(storage);
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Provider.of<Store>(context, listen: false)
+                    .setTheme(storedThemes);
+              });
               return const Main();
             });
       },
@@ -98,11 +141,16 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-class Main extends StatelessWidget {
+class Main extends StatefulWidget {
   const Main({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<Main> createState() => _MainState();
+}
+
+class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
     Store pvdStore = Provider.of<Store>(context, listen: true);
@@ -136,7 +184,6 @@ class Main extends StatelessWidget {
                       }));
                     },
                     backgroundColor: const Color(0xFF222324),
-                    elevation: 3,
                     child: const Icon(Icons.add),
                   ),
                   Padding(
@@ -227,7 +274,7 @@ class Main extends StatelessWidget {
                                               BorderRadius.circular(15.0)),
                                       margin: const EdgeInsets.symmetric(
                                           horizontal: 0, vertical: 0),
-                                      color: Colors.black26,
+                                      color: Colors.transparent,
                                       child: Center(
                                         child: ListTile(
                                           /**Text 안에 list[i].country로 수정*/

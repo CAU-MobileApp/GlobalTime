@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:world_time/components/store.dart';
+import 'package:world_time/precache.dart';
 
 class MainClock extends StatefulWidget {
   const MainClock({
@@ -26,6 +29,7 @@ class _MainClockState extends State<MainClock> {
     timer = Timer.periodic(const Duration(milliseconds: 1), (timer) {
       var now = DateTime.now();
       var local = now.timeZoneOffset.toString().split(':');
+
       now = now.add(Duration(
           hours: int.parse(hourOffset) - int.parse(local[0]),
           minutes: int.parse(minuteOffset) - int.parse(local[1])));
@@ -67,7 +71,7 @@ class _MainClockState extends State<MainClock> {
             .isEmpty &&
         check == true) {
       check = false;
-      Provider.of<StoreTheme>(context, listen: true).getMainTime('Asia/Seoul');
+      Provider.of<StoreTheme>(context, listen: false).getMainTime();
     }
     if (pvdStore.initiatedMainTimer) {
       timer?.cancel();

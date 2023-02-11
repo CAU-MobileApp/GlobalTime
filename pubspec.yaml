@@ -76,6 +76,7 @@ flutter:
     - assets/background/
     - assets/background/small/
     - assets/clock_layout/
+    - assets/clock_layout/small/
     - assets/splash/
 
 
